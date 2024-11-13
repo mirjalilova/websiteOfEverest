@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service BranchesService {
+    rpc Create(CreateBranches) returns (Void);
+    rpc Update(UpdateBranches) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (BranchesRes);
+    rpc GetList(GetListBranchesReq) returns (GetListBranchesRes);
+}
+
+message CreateBranches {
+    string name = 1;
+    string description = 2;
+    string google_url = 3;
+    string yandex_url = 4;
+    string contact = 5;
+}
+
+message UpdateBranches {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string google_url = 4;
+    string yandex_url = 5;
+    string contact = 6;
+}
+
+message BranchesRes {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string google_url = 4;
+    string yandex_url = 5;
+    string contact = 6;
+    string created_at = 7;
+}
+
+message GetListBranchesReq {
+    string name = 1;
+    Filter filter = 2;
+}
+
+message GetListBranchesRes {
+    repeated BranchesRes branches = 1;
+    int32 total_count = 2;
+}

@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service CourseItemService {
+    rpc Create(CreateCourseItem) returns (Void);
+    rpc Update(UpdateCourseItem) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (CourseItemRes);
+    rpc GetList(GetListCourseItemReq) returns (GetListCourseItemRes);
+}
+
+message CreateCourseItem {
+    string course_id = 1;
+    string description = 2;
+    float  price = 3;
+    int32  days_per_week = 4;
+    float  lesson_hours = 5;
+    float  duration_weeks = 6;
+}
+
+message UpdateCourseItem {
+    string id = 1;
+    string course_id = 2;
+    string description = 3;
+    float  price = 4;
+    int32  days_per_week = 5;
+    float  lesson_hours = 6;
+    float  duration_weeks = 7;
+}
+
+message CourseItemRes {
+    string id = 1;
+    string course_id = 2;
+    string description = 3;
+    float  price = 4;
+    int32  days_per_week = 5;
+    float  lesson_hours = 6;
+    float  duration_weeks = 7;
+    string created_at = 8;
+}
+
+message GetListCourseItemReq {
+    string course_id = 1;
+    float  max_price = 2;
+    float  min_price = 3;
+    int32  days_per_week = 4;
+    int32  lesson_hours_min = 5;
+    int32  lesson_hours_max = 6;
+    Filter filter = 7;
+}
+
+message GetListCourseItemRes {
+    repeated CourseItemRes course_items = 1;
+    int32 total_count = 2;
+}

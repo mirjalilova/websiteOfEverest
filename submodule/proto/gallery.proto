@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service GalleryService {
+    rpc Create(CreateGallery) returns (Void);
+    rpc Update(UpdateGallery) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (GalleryRes);
+    rpc GetList(GetListGalleryReq) returns (GetListGalleryRes);
+}
+
+message CreateGallery {
+    string picture_url = 1;
+}
+
+message UpdateGallery {
+    string id = 1;
+    string picture_url = 2;
+}
+
+message GalleryRes {
+    string id = 1;
+    string picture_url = 2;
+    string created_at = 3;
+}
+
+message GetListGalleryReq {
+    Filter filter = 1;
+}
+
+message GetListGalleryRes {
+    repeated GalleryRes galleries = 1;
+    int32 total_count = 2;
+}

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service TeacherService {
+    rpc Create(CreateTeacher) returns (Void);
+    rpc Update(UpdateTeacher) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (TeacherRes);
+    rpc GetList(GetListTeacherReq) returns (GetListTeacherRes);
+}
+
+message CreateTeacher {
+    string name = 1;
+    int32  experience_years = 2;
+    float  ielts_score = 3;
+    string profile_picture_url = 4;
+    string contact = 5;
+    int32  graduated_students = 6;
+    string bio = 7;
+}
+
+message UpdateTeacher {
+    string id = 1;
+    string name = 2;
+    int32  experience_years = 3;
+    float  ielts_score = 4;
+    string profile_picture_url = 5;
+    string contact = 6;
+    int32  graduated_students = 7;
+    string bio = 8;
+}
+
+message TeacherRes {
+    string id = 1;
+    string name = 2;
+    int32  experience_years = 3;
+    float  ielts_score = 4;
+    string profile_picture_url = 5;
+    string contact = 6;
+    int32  graduated_students = 7;
+    string bio = 8;
+    string created_at = 9;
+}
+
+message GetListTeacherReq {
+    string name = 1;
+    int32  experience_years_min = 2;
+    int32  experience_years_max = 3;
+    float  ielts_score_min = 4;
+    float  ielts_score_max = 5;
+    int32  graduated_students_min = 6;
+    int32  graduated_students_max = 7;
+    Filter filter = 8;
+}
+
+message GetListTeacherRes {
+    repeated TeacherRes teacher = 1;
+    int32 total_count = 2;
+}

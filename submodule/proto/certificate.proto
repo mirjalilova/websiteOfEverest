@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service CertificateService {
+    rpc Create(CreateCertificate) returns (Void);
+    rpc Update(UpdateCertificate) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (CertificateRes);
+    rpc GetList(GetListCertificateReq) returns (GetListCertificateRes);
+}
+
+message CreateCertificate {
+    string name = 1;
+    float  ielts_score = 2;
+    string cefr_level = 3;
+    string description = 4;
+    string certificate_url = 5;
+}
+
+message UpdateCertificate {
+    string id = 1;
+    string name = 2;
+    float  ielts_score = 3;
+    string cefr_level = 4;
+    string description = 5;
+    string certificate_url = 6;
+}
+
+message CertificateRes {
+    string id = 1;
+    string name = 2;
+    float  ielts_score = 3;
+    string cefr_level = 4;
+    string description = 5;
+    string certificate_url = 6;
+    string created_at = 7;
+}
+
+message GetListCertificateReq {
+    string name = 1;
+    float  ielts_score = 2;
+    string cefr_level = 3;
+    Filter filter = 4;
+}
+
+message GetListCertificateRes {
+    repeated CertificateRes certificates = 1;
+    int32 total_count = 2;
+}

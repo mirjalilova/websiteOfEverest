@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option go_package = "internal/genproto/proto";
+
+package proto;
+
+import "common.proto";
+
+service CourseService {
+    rpc Create(CreateCourse) returns (Void);
+    rpc Update(UpdateCourse) returns (Void);
+    rpc Delete(ById) returns (Void);
+    rpc GetById(ById) returns (CourseRes);
+    rpc GetList(GetListCourseReq) returns (GetListCourseRes);
+}
+
+message CreateCourse {
+    string name = 1;
+    float  duration = 2;
+}
+
+message UpdateCourse {
+    string id = 1;
+    string name = 2;
+    float  duration = 3;
+}
+
+message CourseRes {
+    string id = 1;
+    string name = 2;
+    float  duration = 3;
+    string created_at = 4;
+}
+
+message GetListCourseReq {
+    float  duration = 1;
+    Filter filter = 2;
+}
+
+message GetListCourseRes {
+    repeated CourseRes courses = 1;
+    int32 total_count = 2;
+}
