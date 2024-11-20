@@ -17,7 +17,7 @@ func NewTeacherRepository(db *sql.DB) *TeacherRepository {
 	return &TeacherRepository{db: db}
 }
 
-func (r *TeacherRepository) CreateTeacher(req *pb.CreateTeacher) (*pb.Void, error) {
+func (r *TeacherRepository) Create(req *pb.CreateTeacher) (*pb.Void, error) {
 	query := `INSERT INTO teachers (name, experience_years, ielts_score, profile_picture_url, contact, graduated_students, bio)
               VALUES ($1, $2, $3, $4, $5, $6, $7)`
 	_, err := r.db.Exec(query, req.Name, req.ExperienceYears, req.IeltsScore, req.ProfilePictureUrl, req.Contact, req.GraduatedStudents, req.Bio)
@@ -27,7 +27,7 @@ func (r *TeacherRepository) CreateTeacher(req *pb.CreateTeacher) (*pb.Void, erro
 	return &pb.Void{}, nil
 }
 
-func (r *TeacherRepository) UpdateTeacher(req *pb.UpdateTeacher) (*pb.Void, error) {
+func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 	query := `UPDATE teachers SET`
 	var args []interface{}
 	var conditions []string
@@ -75,7 +75,7 @@ func (r *TeacherRepository) UpdateTeacher(req *pb.UpdateTeacher) (*pb.Void, erro
 	return &pb.Void{}, nil
 }
 
-func (r *TeacherRepository) DeleteTeacher(req *pb.ById) (*pb.Void, error) {
+func (r *TeacherRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE teachers SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
 	_, err := r.db.Exec(query, req.Id)
 	if err != nil {
@@ -84,7 +84,7 @@ func (r *TeacherRepository) DeleteTeacher(req *pb.ById) (*pb.Void, error) {
 	return &pb.Void{}, nil
 }
 
-func (r *TeacherRepository) GetTeacherById(req *pb.ById) (*pb.TeacherRes, error) {
+func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
 	res := &pb.TeacherRes{}
 	query := `SELECT 
                 id, 
@@ -119,7 +119,7 @@ func (r *TeacherRepository) GetTeacherById(req *pb.ById) (*pb.TeacherRes, error)
 	return res, nil
 }
 
-func (r *TeacherRepository) GetTeacherList(req *pb.GetListTeacherReq) (*pb.GetListTeacherRes, error) {
+func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeacherRes, error) {
 	res := &pb.GetListTeacherRes{}
 	query := `SELECT 
                 COUNT(id) OVER() AS total_count, 
@@ -158,14 +158,6 @@ func (r *TeacherRepository) GetTeacherList(req *pb.GetListTeacherReq) (*pb.GetLi
 	if req.IeltsScoreMax != 0 {
 		filters = append(filters, "ielts_score <= $"+strconv.Itoa(len(args)+1))
 		args = append(args, req.IeltsScoreMax)
-	}
-	if req.GraduatedStudentsMin != 0 {
-		filters = append(filters, "graduated_students >= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.GraduatedStudentsMin)
-	}
-	if req.GraduatedStudentsMax != 0 {
-		filters = append(filters, "graduated_students <= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.GraduatedStudentsMax)
 	}
 
 	if len(filters) > 0 {

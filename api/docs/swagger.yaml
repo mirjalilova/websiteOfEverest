@@ -1,0 +1,1296 @@
+basePath: /
+definitions:
+  proto.BranchesRes:
+    properties:
+      contact:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      google_url:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      yandex_url:
+        type: string
+    type: object
+  proto.CertificateRes:
+    properties:
+      cefr_level:
+        type: string
+      certificate_url:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      ielts_score:
+        type: number
+      name:
+        type: string
+    type: object
+  proto.CourseItemRes:
+    properties:
+      course_id:
+        type: string
+      created_at:
+        type: string
+      days_per_week:
+        type: integer
+      description:
+        type: string
+      duration_weeks:
+        type: number
+      id:
+        type: string
+      lesson_hours:
+        type: number
+      price:
+        type: number
+    type: object
+  proto.CourseRes:
+    properties:
+      created_at:
+        type: string
+      duration:
+        type: number
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  proto.CreateBranches:
+    properties:
+      contact:
+        type: string
+      description:
+        type: string
+      google_url:
+        type: string
+      name:
+        type: string
+      yandex_url:
+        type: string
+    type: object
+  proto.CreateCertificate:
+    properties:
+      cefr_level:
+        type: string
+      certificate_url:
+        type: string
+      description:
+        type: string
+      ielts_score:
+        type: number
+      name:
+        type: string
+    type: object
+  proto.CreateCourse:
+    properties:
+      duration:
+        type: number
+      name:
+        type: string
+    type: object
+  proto.CreateCourseItem:
+    properties:
+      course_id:
+        type: string
+      days_per_week:
+        type: integer
+      description:
+        type: string
+      duration_weeks:
+        type: number
+      lesson_hours:
+        type: number
+      price:
+        type: number
+    type: object
+  proto.CreateGallery:
+    properties:
+      picture_url:
+        type: string
+    type: object
+  proto.CreateTeacher:
+    properties:
+      bio:
+        type: string
+      contact:
+        type: string
+      experience_years:
+        type: integer
+      graduated_students:
+        type: integer
+      ielts_score:
+        type: number
+      name:
+        type: string
+      profile_picture_url:
+        type: string
+    type: object
+  proto.GalleryRes:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      picture_url:
+        type: string
+    type: object
+  proto.GetListBranchesRes:
+    properties:
+      branches:
+        items:
+          $ref: '#/definitions/proto.BranchesRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.GetListCertificateRes:
+    properties:
+      certificates:
+        items:
+          $ref: '#/definitions/proto.CertificateRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.GetListCourseItemRes:
+    properties:
+      course_items:
+        items:
+          $ref: '#/definitions/proto.CourseItemRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.GetListCourseRes:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/proto.CourseRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.GetListGalleryRes:
+    properties:
+      galleries:
+        items:
+          $ref: '#/definitions/proto.GalleryRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.GetListTeacherRes:
+    properties:
+      teacher:
+        items:
+          $ref: '#/definitions/proto.TeacherRes'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  proto.TeacherRes:
+    properties:
+      bio:
+        type: string
+      contact:
+        type: string
+      created_at:
+        type: string
+      experience_years:
+        type: integer
+      graduated_students:
+        type: integer
+      id:
+        type: string
+      ielts_score:
+        type: number
+      name:
+        type: string
+      profile_picture_url:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API for Pima
+  title: Pima
+  version: "1.0"
+paths:
+  /branches/create:
+    post:
+      consumes:
+      - application/json
+      description: Create branches
+      parameters:
+      - description: Create branches
+        in: body
+        name: branches
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateBranches'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Create branches successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create branches
+      tags:
+      - branches
+  /branches/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a branches by ID
+      parameters:
+      - description: Branches ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Branches deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a branches
+      tags:
+      - branches
+  /branches/get:
+    get:
+      consumes:
+      - application/json
+      description: Get an branches by their ID
+      parameters:
+      - description: Branches ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.BranchesRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get branches by ID
+      tags:
+      - branches
+  /branches/list:
+    get:
+      consumes:
+      - application/json
+      description: Get all branches with optional filtering
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetListBranchesRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get all branches
+      tags:
+      - branches
+  /branches/update:
+    put:
+      consumes:
+      - application/json
+      description: Update branches
+      parameters:
+      - description: Branches ID
+        in: query
+        name: id
+        type: string
+      - description: Branches Update Details
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateBranches'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Branches updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update branches
+      tags:
+      - branches
+  /certificates/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new certificate
+      parameters:
+      - description: Create certificate
+        in: body
+        name: certificate
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCertificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certificate created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a certificate
+      tags:
+      - certificates
+  /certificates/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a certificate by ID
+      parameters:
+      - description: Certificate ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certificate deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a certificate
+      tags:
+      - certificates
+  /certificates/get:
+    get:
+      consumes:
+      - application/json
+      description: Get a certificate by its ID
+      parameters:
+      - description: Certificate ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CertificateRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get certificate by ID
+      tags:
+      - certificates
+  /certificates/list:
+    get:
+      consumes:
+      - application/json
+      description: Fetch a list of certificates with optional filters for name, IELTS
+        score, CEFR level, and pagination parameters.
+      parameters:
+      - description: Filter by certificate name
+        in: query
+        name: name
+        type: string
+      - description: Filter by IELTS score
+        in: query
+        name: ielts_score
+        type: number
+      - description: Filter by CEFR level
+        in: query
+        name: cefr_level
+        type: string
+      - description: Number of records to retrieve (default is 10)
+        in: query
+        name: limit
+        type: integer
+      - description: Number of records to skip for pagination (default is 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A list of certificates matching the filters
+          schema:
+            $ref: '#/definitions/proto.GetListCertificateRes'
+        "400":
+          description: Invalid request parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Retrieve a list of certificates
+      tags:
+      - certificates
+  /certificates/update:
+    put:
+      consumes:
+      - application/json
+      description: Update certificate details
+      parameters:
+      - description: Certificate ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update certificate
+        in: body
+        name: certificate
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCertificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certificate updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a certificate
+      tags:
+      - certificates
+  /courseItems/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new course item
+      parameters:
+      - description: Create course item
+        in: body
+        name: course_item
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCourseItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course item created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a course item
+      tags:
+      - courseItems
+  /courseItems/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a course item by ID
+      parameters:
+      - description: Course Item ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course item deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a course item
+      tags:
+      - courseItems
+  /courseItems/get:
+    get:
+      consumes:
+      - application/json
+      description: Get a course item by its ID
+      parameters:
+      - description: Course Item ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CourseItemRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get course item by ID
+      tags:
+      - courseItems
+  /courseItems/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of course items with optional filters
+      parameters:
+      - description: Course ID
+        in: query
+        name: course_id
+        type: string
+      - description: Maximum price
+        in: query
+        name: max_price
+        type: number
+      - description: Minimum price
+        in: query
+        name: min_price
+        type: number
+      - description: Days Per Week
+        in: query
+        name: days_per_week
+        type: integer
+      - description: Lesson Hours
+        in: query
+        name: lesson_hours
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetListCourseItemRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get list of course items
+      tags:
+      - courseItems
+  /courseItems/update:
+    put:
+      consumes:
+      - application/json
+      description: Update course item details
+      parameters:
+      - description: Course Item ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update course item
+        in: body
+        name: course_item
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCourseItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course item updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a course item
+      tags:
+      - courseItems
+  /courses/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a course
+      parameters:
+      - description: Create course
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a course
+      tags:
+      - courses
+  /courses/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a course by ID
+      parameters:
+      - description: Course ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a course
+      tags:
+      - courses
+  /courses/get:
+    get:
+      consumes:
+      - application/json
+      description: Get a course by its ID
+      parameters:
+      - description: Course ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CourseRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get a course by ID
+      tags:
+      - courses
+  /courses/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of courses with optional filtering
+      parameters:
+      - description: Duration filter
+        in: query
+        name: duration
+        type: number
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetListCourseRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get all courses
+      tags:
+      - courses
+  /courses/update:
+    put:
+      consumes:
+      - application/json
+      description: Update a course by ID
+      parameters:
+      - description: Course ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update course details
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a course
+      tags:
+      - courses
+  /file-upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: File upload
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: File upload
+      tags:
+      - file-upload
+  /gallery/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new gallery entry
+      parameters:
+      - description: Create gallery
+        in: body
+        name: gallery
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateGallery'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gallery created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create gallery
+      tags:
+      - gallery
+  /gallery/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a gallery entry by ID
+      parameters:
+      - description: Gallery ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gallery deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete gallery
+      tags:
+      - gallery
+  /gallery/get:
+    get:
+      consumes:
+      - application/json
+      description: Get a gallery entry by ID
+      parameters:
+      - description: Gallery ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GalleryRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get gallery by ID
+      tags:
+      - gallery
+  /gallery/list:
+    get:
+      consumes:
+      - application/json
+      description: Get all galleries with optional filters
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetListGalleryRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get gallery list
+      tags:
+      - gallery
+  /gallery/update:
+    put:
+      consumes:
+      - application/json
+      description: Update gallery entry
+      parameters:
+      - description: Gallery ID
+        in: query
+        name: id
+        type: string
+      - description: Gallery Update Details
+        in: body
+        name: gallery
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateGallery'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gallery updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update gallery
+      tags:
+      - gallery
+  /teachers/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a teacher with details
+      parameters:
+      - description: Create teacher
+        in: body
+        name: teacher
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateTeacher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Teacher created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a teacher
+      tags:
+      - teachers
+  /teachers/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a teacher by ID
+      parameters:
+      - description: Teacher ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Teacher deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a teacher
+      tags:
+      - teachers
+  /teachers/get:
+    get:
+      consumes:
+      - application/json
+      description: Get a teacher by their ID
+      parameters:
+      - description: Teacher ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.TeacherRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get teacher by ID
+      tags:
+      - teachers
+  /teachers/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of teachers with optional filters
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Minimum years of experience
+        in: query
+        name: experience_years_min
+        type: integer
+      - description: Maximum years of experience
+        in: query
+        name: experience_years_max
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetListTeacherRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get list of teachers
+      tags:
+      - teachers
+  /teachers/update:
+    put:
+      consumes:
+      - application/json
+      description: Update teacher details
+      parameters:
+      - description: Teacher ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update teacher
+        in: body
+        name: teacher
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateTeacher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Teacher updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a teacher
+      tags:
+      - teachers
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

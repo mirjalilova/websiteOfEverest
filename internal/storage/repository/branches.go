@@ -17,7 +17,7 @@ func NewBranchesRepository(db *sql.DB) *BranchesRepository {
 	return &BranchesRepository{db: db}
 }
 
-func (r *BranchesRepository) CreateBranches(req *pb.CreateBranches) (*pb.Void, error) {
+func (r *BranchesRepository) Create(req *pb.CreateBranches) (*pb.Void, error) {
 	query := `INSET INTO branches
                 (name, description, google_url, yandex_url, contact)
                 VALUES ($1, $2, $3, $4, $5)`
@@ -30,7 +30,7 @@ func (r *BranchesRepository) CreateBranches(req *pb.CreateBranches) (*pb.Void, e
 	return &pb.Void{}, nil
 }
 
-func (r *BranchesRepository) UpdateBranches(req *pb.UpdateBranches) (*pb.Void, error) {
+func (r *BranchesRepository) Update(req *pb.UpdateBranches) (*pb.Void, error) {
 	query := `UPDATE branches SET`
 
 	var args []interface{}
@@ -67,7 +67,7 @@ func (r *BranchesRepository) UpdateBranches(req *pb.UpdateBranches) (*pb.Void, e
 	return &pb.Void{}, nil
 }
 
-func (r *BranchesRepository) DeleteBranches(req *pb.ById) (*pb.Void, error) {
+func (r *BranchesRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE branches SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
 
 	_, err := r.db.Exec(query, req.Id)
@@ -78,7 +78,7 @@ func (r *BranchesRepository) DeleteBranches(req *pb.ById) (*pb.Void, error) {
 	return &pb.Void{}, nil
 }
 
-func (r *BranchesRepository) GetBranchesById(req *pb.ById) (*pb.BranchesRes, error) {
+func (r *BranchesRepository) GetById(req *pb.ById) (*pb.BranchesRes, error) {
 	res := &pb.BranchesRes{}
 
 	query := `SELECT 
@@ -112,7 +112,7 @@ func (r *BranchesRepository) GetBranchesById(req *pb.ById) (*pb.BranchesRes, err
 	return res, nil
 }
 
-func (r *BranchesRepository) GetBranchesList(req *pb.GetListBranchesReq) (*pb.GetListBranchesRes, error) {
+func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBranchesRes, error) {
 	res := &pb.GetListBranchesRes{}
 
     query := `SELECT

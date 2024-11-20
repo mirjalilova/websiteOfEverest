@@ -17,7 +17,7 @@ func NewCourseRepository(db *sql.DB) *CourseRepository {
 	return &CourseRepository{db: db}
 }
 
-func (r *CourseRepository) CreateCourse(req *pb.CreateCourse) (*pb.Void, error) {
+func (r *CourseRepository) Create(req *pb.CreateCourse) (*pb.Void, error) {
 	query := `INSERT INTO courses
                 (name, duration)
             VALUES($1, $2)`
@@ -30,7 +30,7 @@ func (r *CourseRepository) CreateCourse(req *pb.CreateCourse) (*pb.Void, error) 
 	return &pb.Void{}, nil
 }
 
-func (r *CourseRepository) UpdateCourse(req *pb.UpdateCourse) (*pb.Void, error) {
+func (r *CourseRepository) Update(req *pb.UpdateCourse) (*pb.Void, error) {
 	query := `UPDATE courses SET`
 
 	var args []interface{}
@@ -60,7 +60,7 @@ func (r *CourseRepository) UpdateCourse(req *pb.UpdateCourse) (*pb.Void, error) 
 	return &pb.Void{}, nil
 }
 
-func (r *CourseRepository) DeleteCourse(req *pb.ById) (*pb.Void, error) {
+func (r *CourseRepository) Delete(req *pb.ById) (*pb.Void, error) {
     query := `UPDATE courses SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
 
 	_, err := r.db.Exec(query, req.Id)
@@ -71,7 +71,7 @@ func (r *CourseRepository) DeleteCourse(req *pb.ById) (*pb.Void, error) {
 	return &pb.Void{}, nil
 }
 
-func (r *CourseRepository) GetCourseById(req *pb.ById) (*pb.CourseRes, error) {
+func (r *CourseRepository) GetById(req *pb.ById) (*pb.CourseRes, error) {
 	res := &pb.CourseRes{}
 
     query := `SELECT
@@ -98,7 +98,7 @@ func (r *CourseRepository) GetCourseById(req *pb.ById) (*pb.CourseRes, error) {
     return res, nil
 }
 
-func (r *CourseRepository) GetCourseList(req *pb.GetListCourseReq) (*pb.GetListCourseRes, error) {
+func (r *CourseRepository) GetList(req *pb.GetListCourseReq) (*pb.GetListCourseRes, error) {
 	res := &pb.GetListCourseRes{}
 
     query := `SELECT

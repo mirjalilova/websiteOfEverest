@@ -49,9 +49,8 @@ message GetListCourseItemReq {
     float  max_price = 2;
     float  min_price = 3;
     int32  days_per_week = 4;
-    int32  lesson_hours_min = 5;
-    int32  lesson_hours_max = 6;
-    Filter filter = 7;
+    int32  lesson_hours = 5;
+    Filter filter = 6;
 }
 
 message GetListCourseItemRes {

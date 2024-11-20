@@ -3,7 +3,9 @@ package minio
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
+	"mime"
+	"path/filepath"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -48,15 +50,44 @@ func (mc *MinioClient) createBucket() error {
 		if err != nil {
 			return fmt.Errorf("failed to create bucket: %v", err)
 		}
-		log.Printf("Bucket %s created successfully", mc.BucketName)
+		slog.Info("Bucket %s created successfully", mc.BucketName, "")
 	}
+
+	policy := fmt.Sprintf(`{
+		"Version": "2012-10-17",
+		"Statement": [
+			{
+				"Effect": "Allow",
+				"Principal": "*",
+				"Action": ["s3:GetObject"],
+				"Resource": ["arn:aws:s3:::%s/*"]
+			}
+		]
+	}`, mc.BucketName)
+
+	err = mc.Client.SetBucketPolicy(context.Background(), mc.BucketName, policy)
+	if err != nil {
+		slog.Error("Error while setting bucket policy: %v", "err", err)
+		return nil
+	}
+
 	return nil
 }
 
-func (mc *MinioClient) UploadFile(ctx context.Context, objectName string, filePath string) (string, error) {
-	_, err := mc.Client.FPutObject(ctx, mc.BucketName, objectName, filePath, minio.PutObjectOptions{})
+func (mc *MinioClient) UploadFile(ctx context.Context, fileName string, filePath string) (string, error) {
+	ext := filepath.Ext(fileName)
+	contentType := mime.TypeByExtension(ext)
+
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+
+	_, err := mc.Client.FPutObject(ctx, mc.BucketName, fileName, filePath, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
 		return "", fmt.Errorf("failed to upload file: %v", err)
 	}
-	return mc.Client.EndpointURL().String() + "/" + mc.BucketName + "/" + objectName, nil
+	
+	minioURL := fmt.Sprintf("http://13.203.2.177:9000/%s/%s", mc.BucketName, fileName)
+
+	return minioURL, nil
 }

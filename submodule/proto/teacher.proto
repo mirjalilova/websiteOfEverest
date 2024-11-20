@@ -53,9 +53,7 @@ message GetListTeacherReq {
     int32  experience_years_max = 3;
     float  ielts_score_min = 4;
     float  ielts_score_max = 5;
-    int32  graduated_students_min = 6;
-    int32  graduated_students_max = 7;
-    Filter filter = 8;
+    Filter filter = 6;
 }
 
 message GetListTeacherRes {

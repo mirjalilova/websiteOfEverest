@@ -7,7 +7,7 @@ import (
 	// "github.com/mirjalilova/websiteOfEverest/api/middleware"
 	// "github.com/casbin/casbin/v2"
 
-	// _ "github.com/mirjalilova/websiteOfEverest/api/docs"
+	_ "github.com/mirjalilova/websiteOfEverest/api/docs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -48,13 +48,61 @@ func NewApi(h *handlers.Handler) *gin.Engine {
 
 	router.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// admin := router.Group("admin") 
-	// {
-	// 	admin.POST("/login/email", h.LoginAdminByEmail)
-	// 	admin.POST("/add/admin", h.RegisterAdmin)
-	// }
+	branches := router.Group("branches") 
+	{
+		branches.POST("/create", h.BranchesCreate)
+		branches.PUT("/update", h.BranchesUpdate)
+		branches.DELETE("/delete", h.BranchesDelete)
+		branches.GET("/get", h.GetBranchesById)
+		branches.GET("/list", h.GetBranchesList)
+	}
 
+	certificate := router.Group("certificates")
+	{
+		certificate.POST("/create", h.CreateCertificate)
+        certificate.PUT("/update", h.UpdateCertificate)
+        certificate.DELETE("/delete", h.DeleteCertificate)
+        certificate.GET("/get", h.GetCertificateById)
+        certificate.GET("/list", h.GetCertificateList)
+	}
 
+	courseItem := router.Group("courseItems")
+	{
+		courseItem.POST("/create", h.CreateCourseItem)
+        courseItem.PUT("/update", h.UpdateCourseItem)
+        courseItem.DELETE("/delete", h.DeleteCourseItem)
+        courseItem.GET("/get", h.GetCourseItemById)
+        courseItem.GET("/list", h.GetCourseItemList)
+	}
+
+	course := router.Group("courses")
+	{
+		course.POST("/create", h.CourseCreate)
+        course.PUT("/update", h.CourseUpdate)
+        course.DELETE("/delete", h.CourseDelete)
+        course.GET("/get", h.GetCourseById)
+        course.GET("/list", h.GetCoursesList)
+	}
+
+	gallery := router.Group("gallery")
+	{
+		gallery.POST("/create", h.GalleryCreate)
+        gallery.PUT("/update", h.GalleryUpdate)
+        gallery.DELETE("/delete", h.GalleryDelete)
+        gallery.GET("/get", h.GetGalleryById)
+        gallery.GET("/list", h.GetGalleryList)
+	}
+
+	teacher := router.Group("teachers")
+	{
+		teacher.POST("/create", h.TeacherCreate)
+        teacher.PUT("/update", h.TeacherUpdate)
+        teacher.DELETE("/delete", h.TeacherDelete)
+        teacher.GET("/get", h.GetTeacherById)
+        teacher.GET("/list", h.GetTeacherList)
+	}
+
+	router.POST("file-upload", h.UploadFile)
 
 	return router
 }

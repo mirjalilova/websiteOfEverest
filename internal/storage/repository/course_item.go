@@ -17,7 +17,7 @@ func NewCourseItemRepository(db *sql.DB) *CourseItemRepository {
 	return &CourseItemRepository{db: db}
 }
 
-func (r *CourseItemRepository) CreateCourseItem(req *pb.CreateCourseItem) (*pb.Void, error) {
+func (r *CourseItemRepository) Create(req *pb.CreateCourseItem) (*pb.Void, error) {
 	query := `INSERT INTO course_items
                 (course_id, description, price, days_per_week, lesson_hours, duration_weeks)
               VALUES ($1, $2, $3, $4, $5, $6)`
@@ -30,7 +30,7 @@ func (r *CourseItemRepository) CreateCourseItem(req *pb.CreateCourseItem) (*pb.V
 	return &pb.Void{}, nil
 }
 
-func (r *CourseItemRepository) UpdateCourseItem(req *pb.UpdateCourseItem) (*pb.Void, error) {
+func (r *CourseItemRepository) Update(req *pb.UpdateCourseItem) (*pb.Void, error) {
 	query := `UPDATE course_items SET`
 
 	var args []interface{}
@@ -75,7 +75,7 @@ func (r *CourseItemRepository) UpdateCourseItem(req *pb.UpdateCourseItem) (*pb.V
 	return &pb.Void{}, nil
 }
 
-func (r *CourseItemRepository) DeleteCourseItem(req *pb.ById) (*pb.Void, error) {
+func (r *CourseItemRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE course_items SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 AND deleted_at=0`
 
 	_, err := r.db.Exec(query, req.Id)
@@ -86,7 +86,7 @@ func (r *CourseItemRepository) DeleteCourseItem(req *pb.ById) (*pb.Void, error) 
 	return &pb.Void{}, nil
 }
 
-func (r *CourseItemRepository) GetCourseItemById(req *pb.ById) (*pb.CourseItemRes, error) {
+func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) {
 	res := &pb.CourseItemRes{}
 
 	query := `SELECT 
@@ -122,7 +122,7 @@ func (r *CourseItemRepository) GetCourseItemById(req *pb.ById) (*pb.CourseItemRe
 	return res, nil
 }
 
-func (r *CourseItemRepository) GetCourseItemList(req *pb.GetListCourseItemReq) (*pb.GetListCourseItemRes, error) {
+func (r *CourseItemRepository) GetList(req *pb.GetListCourseItemReq) (*pb.GetListCourseItemRes, error) {
 	res := &pb.GetListCourseItemRes{}
 	var args []interface{}
 	var conditions []string
@@ -158,13 +158,9 @@ func (r *CourseItemRepository) GetCourseItemList(req *pb.GetListCourseItemReq) (
 		args = append(args, req.DaysPerWeek)
 		conditions = append(conditions, "days_per_week=$"+strconv.Itoa(len(args)))
 	}
-	if req.LessonHoursMin > 0 {
-		args = append(args, req.LessonHoursMin)
-		conditions = append(conditions, "lesson_hours >= $"+strconv.Itoa(len(args)))
-	}
-	if req.LessonHoursMax > 0 {
-		args = append(args, req.LessonHoursMax)
-		conditions = append(conditions, "lesson_hours <= $"+strconv.Itoa(len(args)))
+	if req.LessonHours > 0 {
+		args = append(args, req.LessonHours)
+		conditions = append(conditions, "lesson_hours = $"+strconv.Itoa(len(args)))
 	}
 
 	if len(conditions) > 0 {

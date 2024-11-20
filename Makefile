@@ -29,7 +29,7 @@ build:
 	CGO_ENABLED=0 GOOS=darwin go build -mod=vendor -a -installsuffix cgo -o ${CURRENT_DIR}/bin/${APP} ${APP_CMD_DIR}/main.go
 
 swag-gen:
-	~/go/bin/swag init -g ./api/api.go -o utils/docs force 1
+	~/go/bin/swag init -g ./api/router.go -o api/docs force 1
 
 proto-gen:
 	./scripts/gen-proto.sh ${CURRENT_DIR}

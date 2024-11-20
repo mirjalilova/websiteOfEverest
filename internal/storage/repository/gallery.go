@@ -16,7 +16,7 @@ func NewGalleryRepository(db *sql.DB) *GalleryRepository {
     return &GalleryRepository{db: db}
 }
 
-func (r *GalleryRepository) CreateGallery(req *pb.CreateGallery) (*pb.Void, error) {
+func (r *GalleryRepository) Create(req *pb.CreateGallery) (*pb.Void, error) {
     query := `INSERT INTO gallery (picture_url) VALUES ($1)`
     _, err := r.db.Exec(query, req.PictureUrl)
     if err != nil {
@@ -25,7 +25,7 @@ func (r *GalleryRepository) CreateGallery(req *pb.CreateGallery) (*pb.Void, erro
     return &pb.Void{}, nil
 }
 
-func (r *GalleryRepository) UpdateGallery(req *pb.UpdateGallery) (*pb.Void, error) {
+func (r *GalleryRepository) Update(req *pb.UpdateGallery) (*pb.Void, error) {
     query := `UPDATE gallery SET`
     var args []interface{}
     var conditions []string
@@ -48,7 +48,7 @@ func (r *GalleryRepository) UpdateGallery(req *pb.UpdateGallery) (*pb.Void, erro
     return &pb.Void{}, nil
 }
 
-func (r *GalleryRepository) DeleteGallery(req *pb.ById) (*pb.Void, error) {
+func (r *GalleryRepository) Delete(req *pb.ById) (*pb.Void, error) {
     query := `UPDATE gallery SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
     _, err := r.db.Exec(query, req.Id)
     if err != nil {
@@ -57,7 +57,7 @@ func (r *GalleryRepository) DeleteGallery(req *pb.ById) (*pb.Void, error) {
     return &pb.Void{}, nil
 }
 
-func (r *GalleryRepository) GetGalleryById(req *pb.ById) (*pb.GalleryRes, error) {
+func (r *GalleryRepository) GetById(req *pb.ById) (*pb.GalleryRes, error) {
     res := &pb.GalleryRes{}
     query := `SELECT 
                 id, 
@@ -81,7 +81,7 @@ func (r *GalleryRepository) GetGalleryById(req *pb.ById) (*pb.GalleryRes, error)
     return res, nil
 }
 
-func (r *GalleryRepository) GetGalleryList(req *pb.GetListGalleryReq) (*pb.GetListGalleryRes, error) {
+func (r *GalleryRepository) GetList(req *pb.GetListGalleryReq) (*pb.GetListGalleryRes, error) {
     res := &pb.GetListGalleryRes{}
     query := `SELECT 
                 COUNT(id) OVER() AS total_count, 

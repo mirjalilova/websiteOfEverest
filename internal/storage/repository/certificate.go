@@ -18,7 +18,7 @@ func NewCertificateRepository(db *sql.DB) *CertificateRepository {
 	return &CertificateRepository{db: db}
 }
 
-func (r *CertificateRepository) CreateCertificate(req *pb.CreateCertificate) (*pb.Void, error) {
+func (r *CertificateRepository) Create(req *pb.CreateCertificate) (*pb.Void, error) {
 
 	query := `INSERT INTO certificates
 				(name, ielts_score, cefr_level, description, certificate_url)
@@ -31,7 +31,7 @@ func (r *CertificateRepository) CreateCertificate(req *pb.CreateCertificate) (*p
 	return &pb.Void{}, nil
 }
 
-func (r *CertificateRepository) UpdateCertificate(req *pb.UpdateCertificate) (*pb.Void, error) {
+func (r *CertificateRepository) Update(req *pb.UpdateCertificate) (*pb.Void, error) {
 	query := `UPDATE certificates SET`
 
 	var args []interface{}
@@ -72,7 +72,7 @@ func (r *CertificateRepository) UpdateCertificate(req *pb.UpdateCertificate) (*p
 	return &pb.Void{}, nil
 }
 
-func (r *CertificateRepository) DeleteCertificate(req *pb.ById) (*pb.Void, error) {
+func (r *CertificateRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE certificates SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
 
 	_, err := r.db.Exec(query, req.Id)
@@ -83,7 +83,7 @@ func (r *CertificateRepository) DeleteCertificate(req *pb.ById) (*pb.Void, error
 	return &pb.Void{}, nil
 }
 
-func (r *CertificateRepository) GetCertificateById(req *pb.ById) (*pb.CertificateRes, error) {
+func (r *CertificateRepository) GetById(req *pb.ById) (*pb.CertificateRes, error) {
 	res := &pb.CertificateRes{}
 
 	query := `SELECT 
@@ -117,7 +117,7 @@ func (r *CertificateRepository) GetCertificateById(req *pb.ById) (*pb.Certificat
 	return res, nil
 }
 
-func (r *CertificateRepository) GetCertificateList(req *pb.GetListCertificateReq) (*pb.GetListCertificateRes, error) {
+func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetListCertificateRes, error) {
 	res := &pb.GetListCertificateRes{}
 
 	query := `SELECT
