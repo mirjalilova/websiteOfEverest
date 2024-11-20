@@ -1,56 +1,79 @@
-version: '3.9'
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    ports:
-      - "${APP_PORT}:8080"
+  migrate:
+    image: migrate/migrate
+    networks:
+      - everest
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://postgres:1111@db:5432/everest?sslmode=disable", "up"]
     depends_on:
-      - db
-      - redis
-      - minio
+      db:
+        condition: service_healthy
 
   db:
-    image: postgres:13
+    container_name: everest_db
+    image: postgres:latest
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: everest
+      PGDATA: /data/postgres
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db:/data/postgres
+    ports:
+      - "5431:5432"
     networks:
-      - everest-network
+      - everest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d everest"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   redis:
-    image: redis:6
+    image: redis:latest
+    container_name: redis-everest
     ports:
       - "6379:6379"
     networks:
-      - everest-network
+      - everest
+
+  everest-service:
+    container_name: everest-service
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./internal/media:/app/internal/media
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    networks:
+      - everest
 
   minio:
     image: minio/minio
+    container_name: minio
     environment:
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    command: server /data
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=feruza
+      - MINIO_SECRET_KEY=feruza17
     ports:
       - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
     networks:
-      - everest-network
+      - everest
 
 volumes:
-  db_data:
+  db:
   minio_data:
 
 networks:
-  everest-network:
-    driver: bridge
+  everest:
+    external: true
