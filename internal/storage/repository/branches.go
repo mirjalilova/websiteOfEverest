@@ -115,7 +115,7 @@ func (r *BranchesRepository) GetById(req *pb.ById) (*pb.BranchesRes, error) {
 func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBranchesRes, error) {
 	res := &pb.GetListBranchesRes{}
 
-    query := `SELECT
+	query := `SELECT
                 COUNT(id) OVER () AS total_count,
                 id, 
                 name, 
@@ -128,36 +128,36 @@ func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBra
                 branches
             WHERE
                 deleted_at = 0`
-    
-    rows, err := r.db.Query(query)
-    if err!= nil {
-        return nil, err
-    }
-    defer rows.Close()
 
-    var count int32 
-    for rows.Next() {
-        var branch pb.BranchesRes
-        err := rows.Scan(
-            &count,
-            &branch.Id,
-            &branch.Name,
-            &branch.Description,
-            &branch.GoogleUrl,
-            &branch.YandexUrl,
-            &branch.Contact,
-            &branch.CreatedAt,
-        )
-        if err!= nil {
-            return nil, err
-        }
-        res.Branches = append(res.Branches, &branch)
-        res.TotalCount = count
-    }
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    if rows.Err() != nil {
-        return nil, err
-    }
+	var count int32
+	for rows.Next() {
+		var branch pb.BranchesRes
+		err := rows.Scan(
+			&count,
+			&branch.Id,
+			&branch.Name,
+			&branch.Description,
+			&branch.GoogleUrl,
+			&branch.YandexUrl,
+			&branch.Contact,
+			&branch.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		res.Branches = append(res.Branches, &branch)
+		res.TotalCount = count
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
 
 	return res, nil
 }
