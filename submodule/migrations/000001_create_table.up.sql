@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE teachers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -8,8 +10,8 @@ CREATE TABLE teachers (
     graduated_students INT,
     bio TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE courses (
@@ -17,8 +19,8 @@ CREATE TABLE courses (
     name VARCHAR(100) NOT NULL,
     duration FLOAT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE course_items (
@@ -30,8 +32,8 @@ CREATE TABLE course_items (
     lesson_hours FLOAT,
     duration_weeks FLOAT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE dashboard (
@@ -44,18 +46,18 @@ CREATE TABLE dashboard (
     ielts_trainers_count INT,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    deleted_at BIGINT DEFAULT 0
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
-CREATE TABLE gallery(
+CREATE TABLE gallery (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     picture_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
-CREATE TABLE branches(
+CREATE TABLE branches (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255),
@@ -63,18 +65,18 @@ CREATE TABLE branches(
     yandex_url TEXT,
     contact VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
-CREATE TABLE certificates(
+CREATE TABLE certificates (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    name VARCHAR (50),
+    name VARCHAR(50),
     ielts_score NUMERIC(1, 1),
     cefr_level VARCHAR(2),
     description VARCHAR(255),
     certificate_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at BIGINT DEFAULT 0
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP DEFAULT NULL
 );
