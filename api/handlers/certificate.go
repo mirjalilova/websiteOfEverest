@@ -38,6 +38,13 @@ func (h *Handler) CreateCertificate(c *gin.Context) {
 		return
 	}
 
+	if req.IeltsScore < 1.0 || req.IeltsScore > 9.0 {
+		c.JSON(400, gin.H{"error": "IELTS score must be between 1.0 and 9.0"})
+		slog.Error("IELTS score must be between 1.0 and 9.0")
+		return 
+	}
+	
+
 	if _, err := h.Clients.Certificate.Create(context.Background(), req); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		slog.Error("Error creating certificate", "err", err)
@@ -69,6 +76,12 @@ func (h *Handler) UpdateCertificate(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		slog.Error("Error parsing request body", "err", err)
 		return
+	}
+
+	if reqBody.IeltsScore < 1.0 || reqBody.IeltsScore > 9.0 {
+		c.JSON(400, gin.H{"error": "IELTS score must be between 1.0 and 9.0"})
+		slog.Error("IELTS score must be between 1.0 and 9.0")
+		return 
 	}
 
 	req := &pb.UpdateCertificate{

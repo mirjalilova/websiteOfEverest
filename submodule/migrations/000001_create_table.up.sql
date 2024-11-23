@@ -71,8 +71,8 @@ CREATE TABLE branches (
 
 CREATE TABLE certificates (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    name VARCHAR(50),
-    ielts_score NUMERIC(1, 1),
+    name VARCHAR (50),
+    ielts_score NUMERIC(2, 1),
     cefr_level VARCHAR(2),
     description VARCHAR(255),
     certificate_url VARCHAR(255),

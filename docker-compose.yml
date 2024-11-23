@@ -7,7 +7,7 @@ services:
       - everest
     volumes:
       - ./submodule/migrations:/migrations
-    command: ["-path", "/migrations", "-database", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database", "postgres://postgres:1111@db:5432/everest?sslmode=disable", "up"]
     depends_on:
       db:
         condition: service_healthy
