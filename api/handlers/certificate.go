@@ -71,6 +71,13 @@ func (h *Handler) UpdateCertificate(c *gin.Context) {
 		return
 	}
 
+	if reqBody.IeltsScore < 1.0 || reqBody.IeltsScore > 9.0 {
+	    c.JSON(400, gin.H{"error": "IELTS score must be between 1.0 and 9.0"})
+		slog.Error("IELTS score must be between 1.0 and 9.0")
+		return 
+	}
+	
+
 	req := &pb.UpdateCertificate{
 		Id:             id,
 		IeltsScore:     reqBody.IeltsScore,

@@ -18,7 +18,7 @@ func NewBranchesRepository(db *sql.DB) *BranchesRepository {
 }
 
 func (r *BranchesRepository) Create(req *pb.CreateBranches) (*pb.Void, error) {
-	query := `INSET INTO branches
+	query := `INSERT INTO branches
                 (name, description, google_url, yandex_url, contact)
                 VALUES ($1, $2, $3, $4, $5)`
 
