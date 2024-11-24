@@ -2054,8 +2054,6 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API for Pima",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
 }
 
 func init() {

@@ -134,7 +134,6 @@ func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetL
 				certificates
 			WHERE
 				deleted_at = 0
-
 `
 
 	rows, err := r.db.Query(query)

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   migrate:
     image: migrate/migrate
@@ -13,12 +11,12 @@ services:
         condition: service_healthy
 
   db:
-    container_name: everest_db
+    container_name: everest_d
     image: postgres:latest
     environment:
-      POSTGRES_USER: ${DB_USER}  # Will be 'postgres' from .env
-      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Will be 'root' from .env
-      POSTGRES_DB: ${DB_NAME}  # Will be 'everest' from .env
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: everest
       PGDATA: /data/postgres
     volumes:
       - db:/data/postgres
@@ -28,24 +26,24 @@ services:
       - everest
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -d everest"]
       interval: 30s
       timeout: 10s
-      retries: 10
+      retries: 5
 
   redis:
     image: redis:latest
-    container_name: redis-everest
+    container_name: redis-everes
     ports:
-      - "${REDIS_PORT}:6379"  # or "6380:6379" if you want to map it differently
+      - "6379:6379"
     networks:
       - everest
 
   everest-service:
-    container_name: everest-service
+    container_name: everest-servic
     build: .
     ports:
-      - "${SERVER_PORT}"
+      - "8080:8080"
     volumes:
       - ./internal/media:/app/internal/media
     depends_on:
@@ -58,13 +56,14 @@ services:
 
   minio:
     image: minio/minio
-    container_name: minio
+    container_name: mini
     environment:
-      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
-      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=feruza
+      - MINIO_SECRET_KEY=feruza17
     ports:
-      - "9002:9000"
-      - "9003:9001"
+      - "9000:9000"
+      - "9001:9001"
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
