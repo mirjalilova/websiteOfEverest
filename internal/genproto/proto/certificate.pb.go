@@ -187,13 +187,13 @@ type CertificateRes struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name           string  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	IeltsScore     float32 `protobuf:"fixed32,3,opt,name=ielts_score,json=ieltsScore,proto3" json:"ielts_score,omitempty"`
-	CefrLevel      string  `protobuf:"bytes,4,opt,name=cefr_level,json=cefrLevel,proto3" json:"cefr_level,omitempty"`
-	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	CertificateUrl string  `protobuf:"bytes,6,opt,name=certificate_url,json=certificateUrl,proto3" json:"certificate_url,omitempty"`
-	CreatedAt      string  `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Id             string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name           string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IeltsScore     string `protobuf:"bytes,3,opt,name=ielts_score,json=ieltsScore,proto3" json:"ielts_score,omitempty"`
+	CefrLevel      string `protobuf:"bytes,4,opt,name=cefr_level,json=cefrLevel,proto3" json:"cefr_level,omitempty"`
+	Description    string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	CertificateUrl string `protobuf:"bytes,6,opt,name=certificate_url,json=certificateUrl,proto3" json:"certificate_url,omitempty"`
+	CreatedAt      string `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (x *CertificateRes) Reset() {
@@ -240,11 +240,11 @@ func (x *CertificateRes) GetName() string {
 	return ""
 }
 
-func (x *CertificateRes) GetIeltsScore() float32 {
+func (x *CertificateRes) GetIeltsScore() string {
 	if x != nil {
 		return x.IeltsScore
 	}
-	return 0
+	return ""
 }
 
 func (x *CertificateRes) GetCefrLevel() string {
@@ -430,7 +430,7 @@ var file_certificate_proto_rawDesc = []byte{
 	0x74, 0x65, 0x52, 0x65, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x69, 0x65, 0x6c,
-	0x74, 0x73, 0x5f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x02, 0x52, 0x0a,
+	0x74, 0x73, 0x5f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
 	0x69, 0x65, 0x6c, 0x74, 0x73, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x65,
 	0x66, 0x72, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
 	0x63, 0x65, 0x66, 0x72, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,

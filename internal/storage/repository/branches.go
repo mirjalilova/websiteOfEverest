@@ -88,7 +88,7 @@ func (r *BranchesRepository) GetById(req *pb.ById) (*pb.BranchesRes, error) {
                 google_url, 
                 yandex_url, 
                 contact, 
-                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at, 
+                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM 
 				branches 
 			WHERE 
@@ -123,7 +123,7 @@ func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBra
                 google_url, 
                 yandex_url,
                 contact, 
-                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at, 
+                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM
                 branches
             WHERE

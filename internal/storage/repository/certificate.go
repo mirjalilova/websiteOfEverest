@@ -90,7 +90,7 @@ func (r *CertificateRepository) GetById(req *pb.ById) (*pb.CertificateRes, error
 	query := `SELECT 
 				id, 
 				name, 
-				CAST(ielts_score AS FLOAT) as ielts_score, 
+ 				ielts_score::TEXT AS ielts_score,			
 				cefr_level, 
 				description, 
 				certificate_url, 
@@ -125,7 +125,7 @@ func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetL
 				COUNT(id) OVER () as total_count,
 				id, 
 				name, 
-				CAST(ielts_score AS FLOAT) as ielts_score,
+				ielts_score::TEXT AS ielts_score,
 				cefr_level, 
 				description, 
 				certificate_url, 

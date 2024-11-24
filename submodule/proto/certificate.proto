@@ -34,7 +34,7 @@ message UpdateCertificate {
 message CertificateRes {
     string id = 1;
     string name = 2;
-    float  ielts_score = 3;
+    string  ielts_score = 3;
     string cefr_level = 4;
     string description = 5;
     string certificate_url = 6;
