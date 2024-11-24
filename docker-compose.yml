@@ -11,7 +11,7 @@ services:
         condition: service_healthy
 
   db:
-    container_name: everest_d
+    container_name: everest_db
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
@@ -33,14 +33,14 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis-everes
+    container_name: redis-everest
     ports:
       - "6379:6379"
     networks:
       - everest
 
   everest-service:
-    container_name: everest-servic
+    container_name: everest-service
     build: .
     ports:
       - "8080:8080"
@@ -56,14 +56,14 @@ services:
 
   minio:
     image: minio/minio
-    container_name: mini
+    container_name: minio
     environment:
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=feruza
       - MINIO_SECRET_KEY=feruza17
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9002:9000"
+      - "9003:9001"
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
