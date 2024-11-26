@@ -90,7 +90,7 @@ func (mc *MinioClient) UploadFile(ctx context.Context, fileName string, filePath
 		return "", fmt.Errorf("failed to upload file: %v", err)
 	}
 
-	minioURL := fmt.Sprintf("http://13.203.2.177:9000/%s/%s", mc.BucketName, fileName)
+	minioURL := fmt.Sprintf("http://13.203.2.177:9002/%s/%s", mc.BucketName, fileName)
 
 	return minioURL, nil
 }
