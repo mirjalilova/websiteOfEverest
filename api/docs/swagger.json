@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API for Pima",
-        "title": "Pima",
+        "description": "API for EVEREST",
+        "title": "EVEREST",
         "contact": {},
         "version": "1.0"
     },

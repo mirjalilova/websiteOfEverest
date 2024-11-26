@@ -2050,8 +2050,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Pima",
-	Description:      "API for Pima",
+	Title:            "EVEREST",
+	Description:      "API for EVEREST",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

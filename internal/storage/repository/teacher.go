@@ -156,7 +156,7 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 		query += " AND " + strings.Join(filters, " AND ")
 	}
 
-	query += fmt.Sprintf("LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
 	args = append(args, req.Filter.Limit, req.Filter.Offset)
 
 	rows, err := r.db.Query(query, args...)

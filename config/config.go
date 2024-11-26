@@ -38,7 +38,7 @@ func LoadConfig() (*Config, error) {
 		DB_NAME:           getEnv("DB_NAME", "everest"),
 		REDIS_HOST:        getEnv("REDIS_HOST", "localhost"),
 		REDIS_PORT:        getEnv("REDIS_PORT", "6379"),
-		MINIO_ENDPOINT:    getEnv("MINIO_ENDPOINT", "localhost:9000"),
+		MINIO_ENDPOINT:    getEnv("MINIO_ENDPOINT", "localhost:9002"),
 		MINIO_ACCESS_KEY:  getEnv("MINIO_ACCESS_KEY", "minioadmin"),
 		MINIO_SECRET_KEY:  getEnv("MINIO_SECRET_KEY", "minioadmin123"),
 		MINIO_BUCKET_NAME: getEnv("MINIO_BUCKET_NAME", "images"),
