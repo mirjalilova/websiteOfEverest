@@ -183,11 +183,14 @@ func (h *Handler) GetCertificateList(c *gin.Context) {
 		return
 	}
 
-	ieltsScore, err := strconv.ParseFloat(ieltsScoreStr, 64)
-	if err != nil {
-		slog.Error("Invalid ielts_score value", "err", err)
-		c.JSON(400, gin.H{"error": "Invalid ielts_score value"})
-		return
+	var ieltsScore float64
+	if ieltsScoreStr != "" {
+		ieltsScore, err = strconv.ParseFloat(ieltsScoreStr, 64)
+		if err != nil {
+			slog.Error("Invalid ielts_score value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid ielts_score value"})
+			return
+		}
 	}
 
 	req := &pb.GetListCertificateReq{

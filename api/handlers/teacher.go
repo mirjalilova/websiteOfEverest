@@ -181,19 +181,25 @@ func (h *Handler) GetTeacherList(c *gin.Context) {
 		return
 	}
 
-	experienceMin, err := strconv.Atoi(experienceMinStr)
-	if err!= nil {
-        slog.Error("Invalid experience_years_min value", "err", err)
-        c.JSON(400, gin.H{"error": "Invalid experience_years_min value"})
-        return
-    }
+	var experienceMin, experienceMax int
 
-	experienceMax, err := strconv.Atoi(experienceMaxStr)
-	if err!= nil {
-        slog.Error("Invalid experience_years_max value", "err", err)
-        c.JSON(400, gin.H{"error": "Invalid experience_years_max value"})
-        return
-    }
+	if experienceMinStr != "" {
+		experienceMin, err = strconv.Atoi(experienceMinStr)
+		if err != nil {
+			slog.Error("Invalid experience_years_min value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid experience_years_min value"})
+			return
+		}
+	}
+
+	if experienceMaxStr != "" {
+		experienceMax, err = strconv.Atoi(experienceMaxStr)
+		if err != nil {
+			slog.Error("Invalid experience_years_max value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid experience_years_max value"})
+			return
+		}
+	}
 
 	req := &pb.GetListTeacherReq{
 		Name:               name,

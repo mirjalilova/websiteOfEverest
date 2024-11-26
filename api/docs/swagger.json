@@ -1017,12 +1017,6 @@
                 "summary": "Get all courses",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "Duration filter",
-                        "name": "duration",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "Limit",
                         "name": "limit",
@@ -1709,6 +1703,9 @@
                 "id": {
                     "type": "string"
                 },
+                "img_url": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1736,7 +1733,7 @@
                     "type": "string"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1779,7 +1776,7 @@
                     "type": "string"
                 },
                 "duration": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -1799,6 +1796,9 @@
                     "type": "string"
                 },
                 "google_url": {
+                    "type": "string"
+                },
+                "img_url": {
                     "type": "string"
                 },
                 "name": {
@@ -1833,7 +1833,7 @@
             "type": "object",
             "properties": {
                 "duration": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1887,7 +1887,7 @@
                     "type": "integer"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -2017,7 +2017,7 @@
                     "type": "string"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

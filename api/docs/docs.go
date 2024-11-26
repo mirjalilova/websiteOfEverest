@@ -1024,12 +1024,6 @@ const docTemplate = `{
                 "summary": "Get all courses",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "Duration filter",
-                        "name": "duration",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "Limit",
                         "name": "limit",
@@ -1716,6 +1710,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "img_url": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1743,7 +1740,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1786,7 +1783,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "duration": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -1806,6 +1803,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "google_url": {
+                    "type": "string"
+                },
+                "img_url": {
                     "type": "string"
                 },
                 "name": {
@@ -1840,7 +1840,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "duration": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1894,7 +1894,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -2024,7 +2024,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ielts_score": {
-                    "type": "number"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

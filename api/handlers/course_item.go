@@ -180,31 +180,42 @@ func (h *Handler) GetCourseItemList(c *gin.Context) {
 		return
 	}
 
-	daysPerWeek, err := strconv.Atoi(daysPerWeekStr)
-	if err != nil {
-		slog.Error("Invalid days_per_week value", "err", err)
-		c.JSON(400, gin.H{"error": "Invalid days_per_week value"})
-		return
-	}
-	lessonHours, err := strconv.Atoi(lessonHoursStr)
-	if err != nil {
-		slog.Error("Invalid lesson_hours value", "err", err)
-		c.JSON(400, gin.H{"error": "Invalid lesson_hours value"})
-		return
-	}
-	maxPrice, err := strconv.ParseFloat(maxPriceStr, 64)
-	if err != nil {
-		slog.Error("Invalid max_price value", "err", err)
-		c.JSON(400, gin.H{"error": "Invalid max_price value"})
-		return
-	}
-	minPrice, err := strconv.ParseFloat(minPriceStr, 64)
-	if err != nil {
-		slog.Error("Invalid min_price value", "err", err)
-		c.JSON(400, gin.H{"error": "Invalid min_price value"})
-		return
-	}
+	var daysPerWeek, lessonHours int
+	var maxPrice, minPrice float64
 
+	if daysPerWeekStr != "" {
+		daysPerWeek, err = strconv.Atoi(daysPerWeekStr)
+		if err != nil {
+			slog.Error("Invalid days_per_week value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid days_per_week value"})
+			return
+		}
+	}
+	if lessonHoursStr != "" {
+		lessonHours, err = strconv.Atoi(lessonHoursStr)
+		if err != nil {
+			slog.Error("Invalid lesson_hours value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid lesson_hours value"})
+			return
+		}
+	}
+	if maxPriceStr != "" {
+		maxPrice, err = strconv.ParseFloat(maxPriceStr, 64)
+		if err != nil {
+			slog.Error("Invalid max_price value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid max_price value"})
+			return
+		}
+	}
+	if minPriceStr != "" {
+		minPrice, err = strconv.ParseFloat(minPriceStr, 64)
+		if err != nil {
+			slog.Error("Invalid min_price value", "err", err)
+			c.JSON(400, gin.H{"error": "Invalid min_price value"})
+			return
+		}
+	}
+	
 	req := &pb.GetListCourseItemReq{
 		CourseId:    courseID,
 		MaxPrice:    float32(maxPrice),

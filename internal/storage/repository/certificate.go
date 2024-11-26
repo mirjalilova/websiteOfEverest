@@ -136,7 +136,30 @@ func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetL
 				deleted_at = 0
 `
 
-	rows, err := r.db.Query(query)
+	var args []interface{}
+	var conditions []string
+
+	if req.Name != "" && req.Name != "string" {
+		args = append(args, "%"+req.Name+"%")
+		conditions = append(conditions, "name ILIKE $"+strconv.Itoa(len(args)))
+	}
+	if req.IeltsScore > 0 {
+		args = append(args, req.IeltsScore)
+		conditions = append(conditions, "ielts_score <= $"+strconv.Itoa(len(args)))
+	}
+	if req.CefrLevel > "" && req.CefrLevel != "string" {
+		args = append(args, req.CefrLevel)
+		conditions = append(conditions, "cefr_level >= $"+strconv.Itoa(len(args)))
+	}
+
+	if len(conditions) > 0 {
+		query += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	args = append(args, req.Filter.Limit, req.Filter.Offset)
+
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}

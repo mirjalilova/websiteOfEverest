@@ -12,6 +12,8 @@ definitions:
         type: string
       id:
         type: string
+      img_url:
+        type: string
       name:
         type: string
       yandex_url:
@@ -30,7 +32,7 @@ definitions:
       id:
         type: string
       ielts_score:
-        type: number
+        type: string
       name:
         type: string
     type: object
@@ -58,7 +60,7 @@ definitions:
       created_at:
         type: string
       duration:
-        type: number
+        type: string
       id:
         type: string
       name:
@@ -71,6 +73,8 @@ definitions:
       description:
         type: string
       google_url:
+        type: string
+      img_url:
         type: string
       name:
         type: string
@@ -93,7 +97,7 @@ definitions:
   proto.CreateCourse:
     properties:
       duration:
-        type: number
+        type: string
       name:
         type: string
     type: object
@@ -128,7 +132,7 @@ definitions:
       graduated_students:
         type: integer
       ielts_score:
-        type: number
+        type: string
       name:
         type: string
       profile_picture_url:
@@ -212,7 +216,7 @@ definitions:
       id:
         type: string
       ielts_score:
-        type: number
+        type: string
       name:
         type: string
       profile_picture_url:
@@ -857,10 +861,6 @@ paths:
       - application/json
       description: Get a list of courses with optional filtering
       parameters:
-      - description: Duration filter
-        in: query
-        name: duration
-        type: number
       - description: Limit
         in: query
         name: limit

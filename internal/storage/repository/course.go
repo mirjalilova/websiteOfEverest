@@ -41,7 +41,7 @@ func (r *CourseRepository) Update(req *pb.UpdateCourse) (*pb.Void, error) {
 		conditions = append(conditions, fmt.Sprintf("name = $%d", len(args)))
 	}
 
-	if req.Duration != 0 {
+	if req.Duration != "" && req.Duration != "string" {
 		args = append(args, req.Duration)
 		conditions = append(conditions, fmt.Sprintf("duration = $%d", len(args)))
 	}
@@ -77,8 +77,8 @@ func (r *CourseRepository) GetById(req *pb.ById) (*pb.CourseRes, error) {
     query := `SELECT
                 id, 
                 name, 
-                duration, 
-                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at,
+                duration::TEXT AS duration, 
+                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM 
                 courses
             WHERE 
@@ -105,13 +105,13 @@ func (r *CourseRepository) GetList(req *pb.GetListCourseReq) (*pb.GetListCourseR
                 COUNT(id) OVER () AS total_count,
                 id, 
                 name, 
-                duration, 
-                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at,
+                duration::TEXT AS duration, 
+                to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM
                 courses
-            WHERE deleted_at = 0`
+            WHERE deleted_at = 0 LIMIT $1 OFFSET $2`
     
-    rows, err := r.db.Query(query)
+    rows, err := r.db.Query(query, req.Filter.Limit, req.Filter.Offset)
     if err!= nil {
         return nil, err
     }

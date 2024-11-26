@@ -7,6 +7,7 @@ import (
 	"mime"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/mirjalilova/websiteOfEverest/config"
@@ -76,6 +77,8 @@ func (mc *MinioClient) createBucket() error {
 
 func (mc *MinioClient) UploadFile(ctx context.Context, fileName string, filePath string) (string, error) {
 	ext := filepath.Ext(fileName)
+	uuid := uuid.New().String()
+	fileName = uuid + "_" + fileName
 	contentType := mime.TypeByExtension(ext)
 
 	if contentType == "" {
@@ -86,7 +89,7 @@ func (mc *MinioClient) UploadFile(ctx context.Context, fileName string, filePath
 	if err != nil {
 		return "", fmt.Errorf("failed to upload file: %v", err)
 	}
-	
+
 	minioURL := fmt.Sprintf("http://13.203.2.177:9000/%s/%s", mc.BucketName, fileName)
 
 	return minioURL, nil

@@ -90,9 +90,9 @@ func (r *GalleryRepository) GetList(req *pb.GetListGalleryReq) (*pb.GetListGalle
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at 
             FROM 
                 gallery 
-            WHERE deleted_at = 0`
+            WHERE deleted_at = 0 LIMIT $1 OFFSET $2`
     
-    rows, err := r.db.Query(query)
+    rows, err := r.db.Query(query, req.Filter.Limit, req.Filter.Offset)
     if err != nil {
         return nil, err
     }

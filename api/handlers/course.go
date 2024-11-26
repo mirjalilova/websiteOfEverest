@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"log/slog"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/mirjalilova/websiteOfEverest/internal/genproto/proto"
@@ -159,7 +158,6 @@ func (h *Handler) GetCourseById(c *gin.Context) {
 // @Tags courses
 // @Accept  json
 // @Produce  json
-// @Param duration query number false "Duration filter"
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
 // @Success 200 {object} proto.GetListCourseRes
@@ -168,7 +166,6 @@ func (h *Handler) GetCourseById(c *gin.Context) {
 // @Security BearerAuth
 // @Router /courses/list [get]
 func (h *Handler) GetCoursesList(c *gin.Context) {
-	durationStr := c.Query("duration")
 	limitStr := c.Query("limit")
 	offsetStr := c.Query("offset")
 
@@ -179,15 +176,7 @@ func (h *Handler) GetCoursesList(c *gin.Context) {
 		return
 	}
 
-	duration, err := strconv.ParseFloat(durationStr, 64)
-	if err!= nil {
-        c.JSON(400, gin.H{"error": "Invalid duration value"})
-        slog.Error("Invalid duration value", "err", err)
-        return
-    }
-
 	req := &pb.GetListCourseReq{
-		Duration: float32(duration),
 		Filter: &pb.Filter{
 			Limit:  int32(limit),
 			Offset: int32(offset),

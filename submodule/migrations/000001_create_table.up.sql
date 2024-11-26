@@ -2,13 +2,13 @@ CREATE TABLE teachers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     experience_years INT,
-    ielts_score NUMERIC(1, 1),
+    ielts_score NUMERIC(2, 1),
     contact VARCHAR(50) NOT NULL,
     profile_picture_url VARCHAR(255),
     graduated_students INT,
     bio TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE courses (
     name VARCHAR(100) NOT NULL,
     duration FLOAT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE course_items (
     lesson_hours FLOAT,
     duration_weeks FLOAT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE gallery(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     picture_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
@@ -62,8 +62,9 @@ CREATE TABLE branches(
     google_url TEXT,
     yandex_url TEXT,
     contact VARCHAR(50) NOT NULL,
+    img_url TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
@@ -75,6 +76,6 @@ CREATE TABLE certificates(
     description VARCHAR(255),
     certificate_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );

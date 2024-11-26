@@ -19,10 +19,10 @@ func NewBranchesRepository(db *sql.DB) *BranchesRepository {
 
 func (r *BranchesRepository) Create(req *pb.CreateBranches) (*pb.Void, error) {
 	query := `INSERT INTO branches
-                (name, description, google_url, yandex_url, contact)
-                VALUES ($1, $2, $3, $4, $5)`
+                (name, description, google_url, yandex_url, contact, img_url)
+                VALUES ($1, $2, $3, $4, $5, $6)`
 
-	_, err := r.db.Exec(query, req.Name, req.Description, req.GoogleUrl, req.YandexUrl, req.Contact)
+	_, err := r.db.Exec(query, req.Name, req.Description, req.GoogleUrl, req.YandexUrl, req.Contact, req.ImgUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +51,10 @@ func (r *BranchesRepository) Update(req *pb.UpdateBranches) (*pb.Void, error) {
 	if req.YandexUrl != "" && req.YandexUrl != "string" {
 		args = append(args, req.YandexUrl)
 		conditions = append(conditions, "yandex_url=$"+strconv.Itoa(len(args)))
+	}
+	if req.ImgUrl != "" && req.ImgUrl != "string" {
+		args = append(args, req.ImgUrl)
+		conditions = append(conditions, "img_url=$"+strconv.Itoa(len(args)))
 	}
 
 	conditions = append(conditions, " updated_at = now()")
@@ -87,7 +91,8 @@ func (r *BranchesRepository) GetById(req *pb.ById) (*pb.BranchesRes, error) {
                 description, 
                 google_url, 
                 yandex_url, 
-                contact, 
+                contact,
+				img_url, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM 
 				branches 
@@ -101,6 +106,7 @@ func (r *BranchesRepository) GetById(req *pb.ById) (*pb.BranchesRes, error) {
 		&res.GoogleUrl,
 		&res.YandexUrl,
 		&res.Contact,
+		&res.ImgUrl,
 		&res.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
@@ -123,13 +129,29 @@ func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBra
                 google_url, 
                 yandex_url,
                 contact, 
+				img_url,
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM
                 branches
             WHERE
                 deleted_at = 0`
 
-	rows, err := r.db.Query(query)
+	var args []interface{}
+	var conditions []string
+
+	if req.Name != "" && req.Name != "string" {
+		args = append(args, "%"+req.Name+"%")
+		conditions = append(conditions, "name ILIKE $"+strconv.Itoa(len(args)))
+	}
+
+	if len(conditions) > 0 {
+		query += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	args = append(args, req.Filter.Limit, req.Filter.Offset)
+
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -146,6 +168,7 @@ func (r *BranchesRepository) GetList(req *pb.GetListBranchesReq) (*pb.GetListBra
 			&branch.GoogleUrl,
 			&branch.YandexUrl,
 			&branch.Contact,
+			&branch.ImgUrl,
 			&branch.CreatedAt,
 		)
 		if err != nil {

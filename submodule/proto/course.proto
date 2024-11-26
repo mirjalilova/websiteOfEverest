@@ -16,25 +16,24 @@ service CourseService {
 
 message CreateCourse {
     string name = 1;
-    float  duration = 2;
+    string  duration = 2;
 }
 
 message UpdateCourse {
     string id = 1;
     string name = 2;
-    float  duration = 3;
+    string  duration = 3;
 }
 
 message CourseRes {
     string id = 1;
     string name = 2;
-    float  duration = 3;
+    string  duration = 3;
     string created_at = 4;
 }
 
 message GetListCourseReq {
-    float  duration = 1;
-    Filter filter = 2;
+    Filter filter = 1;
 }
 
 message GetListCourseRes {

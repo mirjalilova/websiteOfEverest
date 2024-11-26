@@ -14,9 +14,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Pima
+// @title EVEREST
 // @version 1.0
-// @description API for Pima
+// @description API for EVEREST
 // @BasePath /
 // @securityDefinitions.apikey BearerAuth
 // @in header

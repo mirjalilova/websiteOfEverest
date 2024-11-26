@@ -40,7 +40,7 @@ func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 		args = append(args, req.ExperienceYears)
 		conditions = append(conditions, "experience_years=$"+strconv.Itoa(len(args)))
 	}
-	if req.IeltsScore != 0 {
+	if req.IeltsScore != "" && req.IeltsScore != "string" {
 		args = append(args, req.IeltsScore)
 		conditions = append(conditions, "ielts_score=$"+strconv.Itoa(len(args)))
 	}
@@ -90,7 +90,7 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
                 id, 
                 name, 
                 experience_years, 
-                ielts_score, 
+                ielts_score::TEXT AS ielts_score, 
                 profile_picture_url, 
                 contact, 
                 graduated_students, 
@@ -126,7 +126,7 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
                 id, 
                 name, 
                 experience_years, 
-                ielts_score, 
+                ielts_score::TEXT AS ielts_score, 
                 profile_picture_url, 
                 contact, 
                 graduated_students, 
@@ -151,18 +151,13 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 		filters = append(filters, "experience_years <= $"+strconv.Itoa(len(args)+1))
 		args = append(args, req.ExperienceYearsMax)
 	}
-	if req.IeltsScoreMin != 0 {
-		filters = append(filters, "ielts_score >= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.IeltsScoreMin)
-	}
-	if req.IeltsScoreMax != 0 {
-		filters = append(filters, "ielts_score <= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.IeltsScoreMax)
-	}
 
 	if len(filters) > 0 {
 		query += " AND " + strings.Join(filters, " AND ")
 	}
+
+	query += fmt.Sprintf("LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	args = append(args, req.Filter.Limit, req.Filter.Offset)
 
 	rows, err := r.db.Query(query, args...)
 	if err != nil {

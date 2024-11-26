@@ -20,6 +20,7 @@ message CreateBranches {
     string google_url = 3;
     string yandex_url = 4;
     string contact = 5;
+    string img_url = 6;
 }
 
 message UpdateBranches {
@@ -29,6 +30,7 @@ message UpdateBranches {
     string google_url = 4;
     string yandex_url = 5;
     string contact = 6;
+    string img_url = 7;
 }
 
 message BranchesRes {
@@ -38,7 +40,8 @@ message BranchesRes {
     string google_url = 4;
     string yandex_url = 5;
     string contact = 6;
-    string created_at = 7;
+    string img_url = 7;
+    string created_at = 8;
 }
 
 message GetListBranchesReq {
