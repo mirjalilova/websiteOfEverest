@@ -64,7 +64,7 @@ services:
     ports:
       - "9002:9002"
       - "9003:9003"
-    command: server /data --console-address ":9003"
+    command: server /data --address ":9002" --console-address ":9003"
     volumes:
       - minio_data:/data
     networks:
