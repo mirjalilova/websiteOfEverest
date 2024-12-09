@@ -2,7 +2,7 @@ CURRENT_DIR=$(shell pwd)
 APP=everest
 APP_CMD_DIR=./cmd
 
-DB_URL="postgres://postgres:1111@localhost/everest?sslmode=disable"
+DB_URL := "postgres://postgres:1111@localhost:5432/everest?sslmode=disable"
 
 run:
 	go run cmd/main.go
@@ -12,15 +12,14 @@ init:
 	go mod tidy 
 	go mod vendor
 
+migrate-up:
+	migrate -path submodule/migrations -database $(DB_URL) -verbose up 
 
-migrate_up:
-	migrate -path migrations -database postgres://postgres:1111@localhost:5432/everest?sslmode=disable -verbose up
+migrate-down:
+	migrate -path submodule/migrations -database $(DB_URL) -verbose down
 
-migrate_down:
-	migrate -path migrations -database postgres://postgres:1111@localhost:5432/everest?sslmode=disable -verbose down
-
-migrate_force:
-	migrate -path migrations -database postgres://postgres:1111@localhost:5432/everest?sslmode=disable -verbose force 1
+migrate-force:
+	migrate -path submodule/migrations -database $(DB_URL) -verbose force 1
 
 migrate_file:
 	migrate create -ext sql -dir migrations -seq create_table

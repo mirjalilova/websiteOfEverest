@@ -78,7 +78,7 @@ func (h *Handler) UpdateCourseItem(c *gin.Context) {
 		Price:         reqBody.Price,
 		DaysPerWeek:   reqBody.DaysPerWeek,
 		LessonHours:   reqBody.LessonHours,
-		DurationWeeks: reqBody.DurationWeeks,
+		WeekDays: reqBody.WeekDays,
 	}
 
 	if _, err := h.Clients.CourseItem.Update(context.Background(), req); err != nil {

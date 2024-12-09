@@ -66,6 +66,11 @@ func (h *Handler) BranchesCreate(c *gin.Context) {
 // @Router /branches/update [put]
 func (h *Handler) BranchesUpdate(c *gin.Context) {
 	id := c.Query("id")
+	if id == "" {
+		c.JSON(400, gin.H{"error": "id is required"})
+		return
+	}
+	
 	reqBody := &pb.CreateBranches{}
 
 	err := c.BindJSON(reqBody)
@@ -81,6 +86,7 @@ func (h *Handler) BranchesUpdate(c *gin.Context) {
 		Description: reqBody.Description,
 		GoogleUrl:   reqBody.GoogleUrl,
 		YandexUrl:   reqBody.YandexUrl,
+		ImgUrl:      reqBody.ImgUrl,
 		Contact:     reqBody.Contact,
 	}
 

@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"log/slog"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/mirjalilova/websiteOfEverest/internal/genproto/proto"
@@ -79,7 +78,6 @@ func (h *Handler) TeacherUpdate(c *gin.Context) {
 		ProfilePictureUrl: reqBody.ProfilePictureUrl,
 		Contact:           reqBody.Contact,
 		GraduatedStudents: reqBody.GraduatedStudents,
-		Bio:               reqBody.Bio,
 	}
 
 	if _, err := h.Clients.Teacher.Update(context.Background(), req); err != nil {
@@ -181,30 +179,10 @@ func (h *Handler) GetTeacherList(c *gin.Context) {
 		return
 	}
 
-	var experienceMin, experienceMax int
-
-	if experienceMinStr != "" {
-		experienceMin, err = strconv.Atoi(experienceMinStr)
-		if err != nil {
-			slog.Error("Invalid experience_years_min value", "err", err)
-			c.JSON(400, gin.H{"error": "Invalid experience_years_min value"})
-			return
-		}
-	}
-
-	if experienceMaxStr != "" {
-		experienceMax, err = strconv.Atoi(experienceMaxStr)
-		if err != nil {
-			slog.Error("Invalid experience_years_max value", "err", err)
-			c.JSON(400, gin.H{"error": "Invalid experience_years_max value"})
-			return
-		}
-	}
-
 	req := &pb.GetListTeacherReq{
 		Name:               name,
-		ExperienceYearsMin: int32(experienceMin),
-		ExperienceYearsMax: int32(experienceMax),
+		ExperienceYearsMin: experienceMinStr,
+		ExperienceYearsMax: experienceMaxStr,
 		Filter: &pb.Filter{
 			Limit:  int32(limit),
 			Offset: int32(offset),

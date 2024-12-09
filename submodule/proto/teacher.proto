@@ -16,41 +16,38 @@ service TeacherService {
 
 message CreateTeacher {
     string name = 1;
-    int32  experience_years = 2;
-    string  ielts_score = 3;
+    string experience_years = 2;
+    string ielts_score = 3;
     string profile_picture_url = 4;
     string contact = 5;
-    int32  graduated_students = 6;
-    string bio = 7;
+    string graduated_students = 6;
 }
 
 message UpdateTeacher {
     string id = 1;
     string name = 2;
-    int32  experience_years = 3;
-    string  ielts_score = 4;
+    string experience_years = 3;
+    string ielts_score = 4;
     string profile_picture_url = 5;
     string contact = 6;
-    int32  graduated_students = 7;
-    string bio = 8;
+    string graduated_students = 7;
 }
 
 message TeacherRes {
     string id = 1;
     string name = 2;
-    int32  experience_years = 3;
-    string  ielts_score = 4;
+    string experience_years = 3;
+    string ielts_score = 4;
     string profile_picture_url = 5;
     string contact = 6;
-    int32  graduated_students = 7;
-    string bio = 8;
-    string created_at = 9;
+    string graduated_students = 7;
+    string created_at = 8;
 }
 
 message GetListTeacherReq {
     string name = 1;
-    int32  experience_years_min = 2;
-    int32  experience_years_max = 3;
+    string experience_years_min = 2;
+    string experience_years_max = 3;
     Filter filter = 6;
 }
 

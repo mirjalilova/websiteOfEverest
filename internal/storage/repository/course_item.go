@@ -19,10 +19,10 @@ func NewCourseItemRepository(db *sql.DB) *CourseItemRepository {
 
 func (r *CourseItemRepository) Create(req *pb.CreateCourseItem) (*pb.Void, error) {
 	query := `INSERT INTO course_items
-                (course_id, description, price, days_per_week, lesson_hours, duration_weeks)
+                (course_id, description, price, days_per_week, lesson_hours, week_days)
               VALUES ($1, $2, $3, $4, $5, $6)`
 
-	_, err := r.db.Exec(query, req.CourseId, req.Description, req.Price, req.DaysPerWeek, req.LessonHours, req.DurationWeeks)
+	_, err := r.db.Exec(query, req.CourseId, req.Description, req.Price, req.DaysPerWeek, req.LessonHours, req.WeekDays)
 	if err != nil {
 		return nil, err
 	}
@@ -31,49 +31,64 @@ func (r *CourseItemRepository) Create(req *pb.CreateCourseItem) (*pb.Void, error
 }
 
 func (r *CourseItemRepository) Update(req *pb.UpdateCourseItem) (*pb.Void, error) {
-	query := `UPDATE course_items SET`
+    query := `UPDATE course_items SET`
 
-	var args []interface{}
-	var updates []string
+    var args []interface{}
+    var updates []string
 
-	if req.CourseId != "" && req.CourseId != "string" {
-		args = append(args, req.CourseId)
-		updates = append(updates, "course_id=$"+strconv.Itoa(len(args)))
-	}
-	if req.Description != "" && req.Description != "string" {
-		args = append(args, req.Description)
-		updates = append(updates, "description=$"+strconv.Itoa(len(args)))
-	}
-	if req.Price != 0 {
-		args = append(args, req.Price)
-		updates = append(updates, "price=$"+strconv.Itoa(len(args)))
-	}
-	if req.DaysPerWeek != 0 {
-		args = append(args, req.DaysPerWeek)
-		updates = append(updates, "days_per_week=$"+strconv.Itoa(len(args)))
-	}
-	if req.LessonHours != 0 {
-		args = append(args, req.LessonHours)
-		updates = append(updates, "lesson_hours=$"+strconv.Itoa(len(args)))
-	}
-	if req.DurationWeeks != 0 {
-		args = append(args, req.DurationWeeks)
-		updates = append(updates, "duration_weeks=$"+strconv.Itoa(len(args)))
-	}
+    // Check each field and append to updates if necessary
+    if req.CourseId != "" && req.CourseId != "string" {
+        args = append(args, req.CourseId)
+        updates = append(updates, fmt.Sprintf("course_id=$%d", len(args)))
+    }
+    if req.Description != "" && req.Description != "string" {
+        args = append(args, req.Description)
+        updates = append(updates, fmt.Sprintf("description=$%d", len(args)))
+    }
+    if req.Price != 0 {
+        args = append(args, req.Price)
+        updates = append(updates, fmt.Sprintf("price=$%d", len(args)))
+    }
+    if req.DaysPerWeek != 0 {
+        args = append(args, req.DaysPerWeek)
+        updates = append(updates, fmt.Sprintf("days_per_week=$%d", len(args)))
+    }
+    if req.LessonHours != 0 {
+        args = append(args, req.LessonHours)
+        updates = append(updates, fmt.Sprintf("lesson_hours=$%d", len(args)))
+    }
+    if req.WeekDays != "string" && req.WeekDays != "" {
+        args = append(args, req.WeekDays)
+        updates = append(updates, fmt.Sprintf("week_days=$%d", len(args)))
+    }
 
-	updates = append(updates, "updated_at=now()")
-	query += strings.Join(updates, ", ")
-	query += " WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
+    // Check if we have any fields to update
+    if len(updates) == 0 {
+        return nil, fmt.Errorf("no fields to update")
+    }
 
-	args = append(args, req.Id)
+    // Always add updated_at condition
+    updates = append(updates, "updated_at=now()")
 
-	_, err := r.db.Exec(query, args...)
-	if err != nil {
-		return nil, err
-	}
+    // Join the updates and construct the query
+    query += " " + strings.Join(updates, ", ")
+    query += " WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
 
-	return &pb.Void{}, nil
+    // Add ID to arguments
+    args = append(args, req.Id)
+
+    // Debugging: Print the generated query and arguments
+    fmt.Printf("Generated Query: %s\nArgs: %v\n", query, args)
+
+    // Execute the query
+    _, err := r.db.Exec(query, args...)
+    if err != nil {
+        return nil, fmt.Errorf("failed to update course item: %w", err)
+    }
+
+    return &pb.Void{}, nil
 }
+
 
 func (r *CourseItemRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE course_items SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 AND deleted_at=0`
@@ -96,7 +111,7 @@ func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) 
                 price, 
                 days_per_week, 
                 lesson_hours, 
-                duration_weeks, 
+                week_days, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at 
               FROM 
                 course_items 
@@ -110,7 +125,7 @@ func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) 
 		&res.Price,
 		&res.DaysPerWeek,
 		&res.LessonHours,
-		&res.DurationWeeks,
+		&res.WeekDays,
 		&res.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
@@ -135,7 +150,7 @@ func (r *CourseItemRepository) GetList(req *pb.GetListCourseItemReq) (*pb.GetLis
                 price, 
                 days_per_week, 
                 lesson_hours, 
-                duration_weeks, 
+                week_days, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at 
               FROM 
                 course_items 
@@ -187,7 +202,7 @@ func (r *CourseItemRepository) GetList(req *pb.GetListCourseItemReq) (*pb.GetLis
 			&item.Price,
 			&item.DaysPerWeek,
 			&item.LessonHours,
-			&item.DurationWeeks,
+			&item.WeekDays,
 			&item.CreatedAt,
 		)
 		if err != nil {

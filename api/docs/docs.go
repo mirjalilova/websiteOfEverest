@@ -1116,43 +1116,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/file-upload": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "File upload",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "file-upload"
-                ],
-                "summary": "File upload",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "File",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/gallery/create": {
             "post": {
                 "security": [
@@ -1733,9 +1696,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -1762,9 +1722,6 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "duration_weeks": {
-                    "type": "number"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -1773,6 +1730,9 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "week_days": {
+                    "type": "string"
                 }
             }
         },
@@ -1825,9 +1785,6 @@ const docTemplate = `{
                 "certificate_url": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "ielts_score": {
                     "type": "number"
                 },
@@ -1859,14 +1816,14 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "duration_weeks": {
-                    "type": "number"
-                },
                 "lesson_hours": {
                     "type": "number"
                 },
                 "price": {
                     "type": "number"
+                },
+                "week_days": {
+                    "type": "string"
                 }
             }
         },
@@ -1881,17 +1838,14 @@ const docTemplate = `{
         "proto.CreateTeacher": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
                 "contact": {
                     "type": "string"
                 },
                 "experience_years": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "graduated_students": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "ielts_score": {
                     "type": "string"
@@ -2005,9 +1959,6 @@ const docTemplate = `{
         "proto.TeacherRes": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
                 "contact": {
                     "type": "string"
                 },
@@ -2015,10 +1966,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "experience_years": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "graduated_students": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -2054,6 +2005,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API for EVEREST",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

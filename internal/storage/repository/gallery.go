@@ -30,13 +30,13 @@ func (r *GalleryRepository) Update(req *pb.UpdateGallery) (*pb.Void, error) {
     var args []interface{}
     var conditions []string
 
-    if req.PictureUrl != "" {
+    if req.PictureUrl != "" && req.PictureUrl != "string" {
         args = append(args, req.PictureUrl)
         conditions = append(conditions, "picture_url=$"+strconv.Itoa(len(args)))
     }
 
     conditions = append(conditions, "updated_at=NOW()")
-    query += strings.Join(conditions, ", ")
+    query += " " + strings.Join(conditions, ", ")
     query += " WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
 
     args = append(args, req.Id)

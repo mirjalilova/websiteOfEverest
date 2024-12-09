@@ -20,7 +20,7 @@ message CreateCourseItem {
     float  price = 3;
     int32  days_per_week = 4;
     float  lesson_hours = 5;
-    float  duration_weeks = 6;
+    string  week_days = 6;
 }
 
 message UpdateCourseItem {
@@ -30,7 +30,7 @@ message UpdateCourseItem {
     float  price = 4;
     int32  days_per_week = 5;
     float  lesson_hours = 6;
-    float  duration_weeks = 7;
+    string  week_days = 7;
 }
 
 message CourseItemRes {
@@ -40,7 +40,7 @@ message CourseItemRes {
     float  price = 4;
     int32  days_per_week = 5;
     float  lesson_hours = 6;
-    float  duration_weeks = 7;
+    string  week_days = 7;
     string created_at = 8;
 }
 

@@ -38,23 +38,28 @@ func (r *CourseRepository) Update(req *pb.UpdateCourse) (*pb.Void, error) {
 
 	if req.Name != "string" && req.Name != "" {
 		args = append(args, req.Name)
-		conditions = append(conditions, fmt.Sprintf("name = $%d", len(args)))
+		conditions = append(conditions, fmt.Sprintf("name=$%d", len(args)))
 	}
 
 	if req.Duration != "" && req.Duration != "string" {
 		args = append(args, req.Duration)
-		conditions = append(conditions, fmt.Sprintf("duration = $%d", len(args)))
+		conditions = append(conditions, fmt.Sprintf("duration=$%d", len(args)))
 	}
 
-	conditions = append(conditions, " updated_at = now()")
-	query += strings.Join(conditions, ", ")
-	query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " AND deleted_at = 0"
+    if len(conditions) == 0 {
+        return nil, fmt.Errorf("no fields to update")
+    }
+
+	conditions = append(conditions, "updated_at=now()")
+	query += " " + strings.Join(conditions, ", ")
+	query += " WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
 
 	args = append(args, req.Id)
+    fmt.Printf("Generated Query: %s\nArgs: %v\n", query, args)
 
 	_, err := r.db.Exec(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to update course: %v", err)
 	}
 
 	return &pb.Void{}, nil

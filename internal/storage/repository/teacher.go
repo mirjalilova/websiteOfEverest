@@ -18,9 +18,9 @@ func NewTeacherRepository(db *sql.DB) *TeacherRepository {
 }
 
 func (r *TeacherRepository) Create(req *pb.CreateTeacher) (*pb.Void, error) {
-	query := `INSERT INTO teachers (name, experience_years, ielts_score, profile_picture_url, contact, graduated_students, bio)
-              VALUES ($1, $2, $3, $4, $5, $6, $7)`
-	_, err := r.db.Exec(query, req.Name, req.ExperienceYears, req.IeltsScore, req.ProfilePictureUrl, req.Contact, req.GraduatedStudents, req.Bio)
+	query := `INSERT INTO teachers (name, experience_years, ielts_score, profile_picture_url, contact, graduated_students)
+              VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err := r.db.Exec(query, req.Name, req.ExperienceYears, req.IeltsScore, req.ProfilePictureUrl, req.Contact, req.GraduatedStudents)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 		args = append(args, req.Name)
 		conditions = append(conditions, "name=$"+strconv.Itoa(len(args)))
 	}
-	if req.ExperienceYears != 0 {
+	if req.ExperienceYears != "" && req.ExperienceYears != "string" {
 		args = append(args, req.ExperienceYears)
 		conditions = append(conditions, "experience_years=$"+strconv.Itoa(len(args)))
 	}
@@ -52,17 +52,14 @@ func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 		args = append(args, req.Contact)
 		conditions = append(conditions, "contact=$"+strconv.Itoa(len(args)))
 	}
-	if req.GraduatedStudents != 0 {
+	if req.GraduatedStudents != "" && req.GraduatedStudents != "string" {
 		args = append(args, req.GraduatedStudents)
 		conditions = append(conditions, "graduated_students=$"+strconv.Itoa(len(args)))
 	}
-	if req.Bio != "" && req.Bio != "string" {
-		args = append(args, req.Bio)
-		conditions = append(conditions, "bio=$"+strconv.Itoa(len(args)))
-	}
+
 
 	conditions = append(conditions, "updated_at=NOW()")
-	query += strings.Join(conditions, ", ")
+	query += " " + strings.Join(conditions, ", ")
 	query += " WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
 
 	args = append(args, req.Id)
@@ -94,8 +91,7 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
                 profile_picture_url, 
                 contact, 
                 graduated_students, 
-                bio, 
-                to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at,
+                to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at
             FROM 
                 teachers 
             WHERE id = $1 AND deleted_at = 0`
@@ -108,7 +104,6 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
 		&res.ProfilePictureUrl,
 		&res.Contact,
 		&res.GraduatedStudents,
-		&res.Bio,
 		&res.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
@@ -130,7 +125,6 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
                 profile_picture_url, 
                 contact, 
                 graduated_students, 
-                bio, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at 
             FROM 
                 teachers 
@@ -143,11 +137,11 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 		filters = append(filters, "name ILIKE '%' || $"+strconv.Itoa(len(args)+1)+" || '%'")
 		args = append(args, req.Name)
 	}
-	if req.ExperienceYearsMin != 0 {
+	if req.ExperienceYearsMin != "" && req.ExperienceYearsMin != "string" {
 		filters = append(filters, "experience_years >= $"+strconv.Itoa(len(args)+1))
 		args = append(args, req.ExperienceYearsMin)
 	}
-	if req.ExperienceYearsMax != 0 {
+	if req.ExperienceYearsMax != "" && req.ExperienceYearsMax != "string" {
 		filters = append(filters, "experience_years <= $"+strconv.Itoa(len(args)+1))
 		args = append(args, req.ExperienceYearsMax)
 	}
@@ -177,7 +171,6 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 			&teacher.ProfilePictureUrl,
 			&teacher.Contact,
 			&teacher.GraduatedStudents,
-			&teacher.Bio,
 			&teacher.CreatedAt,
 		)
 		if err != nil {

@@ -1109,43 +1109,6 @@
                 }
             }
         },
-        "/file-upload": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "File upload",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "file-upload"
-                ],
-                "summary": "File upload",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "File",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/gallery/create": {
             "post": {
                 "security": [
@@ -1726,9 +1689,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -1755,9 +1715,6 @@
                 "description": {
                     "type": "string"
                 },
-                "duration_weeks": {
-                    "type": "number"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -1766,6 +1723,9 @@
                 },
                 "price": {
                     "type": "number"
+                },
+                "week_days": {
+                    "type": "string"
                 }
             }
         },
@@ -1818,9 +1778,6 @@
                 "certificate_url": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "ielts_score": {
                     "type": "number"
                 },
@@ -1852,14 +1809,14 @@
                 "description": {
                     "type": "string"
                 },
-                "duration_weeks": {
-                    "type": "number"
-                },
                 "lesson_hours": {
                     "type": "number"
                 },
                 "price": {
                     "type": "number"
+                },
+                "week_days": {
+                    "type": "string"
                 }
             }
         },
@@ -1874,17 +1831,14 @@
         "proto.CreateTeacher": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
                 "contact": {
                     "type": "string"
                 },
                 "experience_years": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "graduated_students": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "ielts_score": {
                     "type": "string"
@@ -1998,9 +1952,6 @@
         "proto.TeacherRes": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
                 "contact": {
                     "type": "string"
                 },
@@ -2008,10 +1959,10 @@
                     "type": "string"
                 },
                 "experience_years": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "graduated_students": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"

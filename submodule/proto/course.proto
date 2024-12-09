@@ -22,13 +22,13 @@ message CreateCourse {
 message UpdateCourse {
     string id = 1;
     string name = 2;
-    string  duration = 3;
+    string duration = 3;
 }
 
 message CourseRes {
     string id = 1;
     string name = 2;
-    string  duration = 3;
+    string duration = 3;
     string created_at = 4;
 }
 

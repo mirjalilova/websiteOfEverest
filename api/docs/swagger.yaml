@@ -27,8 +27,6 @@ definitions:
         type: string
       created_at:
         type: string
-      description:
-        type: string
       id:
         type: string
       ielts_score:
@@ -46,14 +44,14 @@ definitions:
         type: integer
       description:
         type: string
-      duration_weeks:
-        type: number
       id:
         type: string
       lesson_hours:
         type: number
       price:
         type: number
+      week_days:
+        type: string
     type: object
   proto.CourseRes:
     properties:
@@ -87,8 +85,6 @@ definitions:
         type: string
       certificate_url:
         type: string
-      description:
-        type: string
       ielts_score:
         type: number
       name:
@@ -109,12 +105,12 @@ definitions:
         type: integer
       description:
         type: string
-      duration_weeks:
-        type: number
       lesson_hours:
         type: number
       price:
         type: number
+      week_days:
+        type: string
     type: object
   proto.CreateGallery:
     properties:
@@ -123,14 +119,12 @@ definitions:
     type: object
   proto.CreateTeacher:
     properties:
-      bio:
-        type: string
       contact:
         type: string
       experience_years:
-        type: integer
+        type: string
       graduated_students:
-        type: integer
+        type: string
       ielts_score:
         type: string
       name:
@@ -203,16 +197,14 @@ definitions:
     type: object
   proto.TeacherRes:
     properties:
-      bio:
-        type: string
       contact:
         type: string
       created_at:
         type: string
       experience_years:
-        type: integer
+        type: string
       graduated_students:
-        type: integer
+        type: string
       id:
         type: string
       ielts_score:
@@ -926,29 +918,6 @@ paths:
       summary: Update a course
       tags:
       - courses
-  /file-upload:
-    post:
-      consumes:
-      - multipart/form-data
-      description: File upload
-      parameters:
-      - description: File
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: File upload
-      tags:
-      - file-upload
   /gallery/create:
     post:
       consumes:

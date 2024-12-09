@@ -88,7 +88,6 @@ func (h *Handler) UpdateCertificate(c *gin.Context) {
 		Id:             id,
 		IeltsScore:     reqBody.IeltsScore,
 		CefrLevel:      reqBody.CefrLevel,
-		Description:    reqBody.Description,
 		CertificateUrl: reqBody.CertificateUrl,
 	}
 

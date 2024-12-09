@@ -31,45 +31,62 @@ func (r *BranchesRepository) Create(req *pb.CreateBranches) (*pb.Void, error) {
 }
 
 func (r *BranchesRepository) Update(req *pb.UpdateBranches) (*pb.Void, error) {
-	query := `UPDATE branches SET`
+    query := `UPDATE branches SET `
+    var args []interface{}
+    var conditions []string
 
-	var args []interface{}
-	var conditions []string
-
-	if req.Name != "" && req.Name != "string" {
-		args = append(args, req.Name)
-		conditions = append(conditions, "name=$"+strconv.Itoa(len(args)))
-	}
-	if req.Description != "" && req.Description != "string" {
-		args = append(args, req.Description)
-		conditions = append(conditions, "description=$"+strconv.Itoa(len(args)))
-	}
-	if req.GoogleUrl != "" && req.GoogleUrl != "string" {
-		args = append(args, req.GoogleUrl)
-		conditions = append(conditions, "google_url=$"+strconv.Itoa(len(args)))
-	}
-	if req.YandexUrl != "" && req.YandexUrl != "string" {
-		args = append(args, req.YandexUrl)
-		conditions = append(conditions, "yandex_url=$"+strconv.Itoa(len(args)))
-	}
-	if req.ImgUrl != "" && req.ImgUrl != "string" {
-		args = append(args, req.ImgUrl)
-		conditions = append(conditions, "img_url=$"+strconv.Itoa(len(args)))
-	}
-
-	conditions = append(conditions, " updated_at = now()")
-	query += strings.Join(conditions, ", ")
-	query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " AND deleted_at = 0"
-
-	args = append(args, req.Id)
-
-	_, err := r.db.Exec(query, args...)
-	if err != nil {
-		return nil, err
+    if req.Name != "" && req.Name != "string" {
+        args = append(args, req.Name)
+        conditions = append(conditions, "name=$"+strconv.Itoa(len(args)))
+    }
+    if req.Description != "" && req.Description != "string" {
+        args = append(args, req.Description)
+        conditions = append(conditions, "description=$"+strconv.Itoa(len(args)))
+    }
+    if req.GoogleUrl != "" && req.GoogleUrl != "string" {
+        args = append(args, req.GoogleUrl)
+        conditions = append(conditions, "google_url=$"+strconv.Itoa(len(args)))
+    }
+    if req.YandexUrl != "" && req.YandexUrl != "string" {
+        args = append(args, req.YandexUrl)
+        conditions = append(conditions, "yandex_url=$"+strconv.Itoa(len(args)))
+    }
+    if req.ImgUrl != "" && req.ImgUrl != "string" {
+        args = append(args, req.ImgUrl)
+        conditions = append(conditions, "img_url=$"+strconv.Itoa(len(args)))
+    }
+	if req.Contact != "" && req.Contact != "string" {
+		args = append(args, req.Contact)
+		conditions = append(conditions, "contact=$"+strconv.Itoa(len(args)))
 	}
 
-	return &pb.Void{}, nil
+    if len(conditions) == 0 {
+        return nil, fmt.Errorf("no fields to update")
+    }
+
+    // Append `updated_at` to conditions
+    conditions = append(conditions, "updated_at = now()")
+
+    // Join conditions and construct the full query
+    query += strings.Join(conditions, ", ")
+    query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " AND deleted_at = 0"
+
+    // Add ID to arguments
+    args = append(args, req.Id)
+
+    // Log the query for debugging
+    fmt.Printf("Generated Query: %s\nArgs: %v\n", query, args)
+
+    // Execute the query
+    _, err := r.db.Exec(query, args...)
+    if err != nil {
+        return nil, fmt.Errorf("failed to update branch: %w", err)
+    }
+
+    return &pb.Void{}, nil
 }
+
+
 
 func (r *BranchesRepository) Delete(req *pb.ById) (*pb.Void, error) {
 	query := `UPDATE branches SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`

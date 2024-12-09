@@ -18,8 +18,7 @@ message CreateCertificate {
     string name = 1;
     float  ielts_score = 2;
     string cefr_level = 3;
-    string description = 4;
-    string certificate_url = 5;
+    string certificate_url = 4;
 }
 
 message UpdateCertificate {
@@ -27,8 +26,7 @@ message UpdateCertificate {
     string name = 2;
     float  ielts_score = 3;
     string cefr_level = 4;
-    string description = 5;
-    string certificate_url = 6;
+    string certificate_url = 5;
 }
 
 message CertificateRes {
@@ -36,9 +34,8 @@ message CertificateRes {
     string name = 2;
     string  ielts_score = 3;
     string cefr_level = 4;
-    string description = 5;
-    string certificate_url = 6;
-    string created_at = 7;
+    string certificate_url = 5;
+    string created_at = 6;
 }
 
 message GetListCertificateReq {

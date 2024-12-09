@@ -1,40 +1,39 @@
-CREATE TABLE teachers (
+CREATE TABLE IF NOT EXISTS teachers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    experience_years INT,
+    experience_years VARCHAR(100) NOT NULL,
     ielts_score NUMERIC(2, 1),
     contact VARCHAR(50) NOT NULL,
     profile_picture_url VARCHAR(255),
-    graduated_students INT,
-    bio TEXT,
+    graduated_students VARCHAR(100),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses  ( 
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    duration FLOAT,
+    duration VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE course_items (
+CREATE TABLE IF NOT EXISTS course_items  (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    course_id UUID REFERENCES courses(id),
-    description VARCHAR(100) NOT NULL,
+    course_id UUID REFERENCES courses(id) NOT NULL,
+    description VARCHAR(255) NOT NULL,
     price FLOAT,
-    days_per_week INT,
-    lesson_hours FLOAT,
-    duration_weeks FLOAT,
+    days_per_week INT NOT NULL,
+    lesson_hours FLOAT NOT NULL,
+    week_days VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE dashboard (
+CREATE TABLE IF NOT EXISTS dashboard  (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     average_experience_years FLOAT,
     branch_count INT,
@@ -47,7 +46,7 @@ CREATE TABLE dashboard (
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE gallery(
+CREATE TABLE IF NOT EXISTS gallery (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     picture_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
@@ -55,7 +54,7 @@ CREATE TABLE gallery(
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE branches(
+CREATE TABLE IF NOT EXISTS branches  (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255),
@@ -68,13 +67,12 @@ CREATE TABLE branches(
     deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE certificates(
+CREATE TABLE IF NOT EXISTS certificates  (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    name VARCHAR (50),
-    ielts_score NUMERIC(2, 1),
-    cefr_level VARCHAR(2),
-    description VARCHAR(255),
-    certificate_url VARCHAR(255),
+    name VARCHAR (50) NOT NULL,
+    ielts_score NUMERIC(2, 1) NOT NULL,
+    cefr_level VARCHAR(50) NOT NULL,
+    certificate_url VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
