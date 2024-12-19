@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"log/slog"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/mirjalilova/websiteOfEverest/internal/genproto/proto"
@@ -41,9 +40,8 @@ func (h *Handler) CreateCertificate(c *gin.Context) {
 	if req.IeltsScore < 1.0 || req.IeltsScore > 9.0 {
 		c.JSON(400, gin.H{"error": "IELTS score must be between 1.0 and 9.0"})
 		slog.Error("IELTS score must be between 1.0 and 9.0")
-		return 
+		return
 	}
-	
 
 	if _, err := h.Clients.Certificate.Create(context.Background(), req); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -81,7 +79,7 @@ func (h *Handler) UpdateCertificate(c *gin.Context) {
 	if reqBody.IeltsScore < 1.0 || reqBody.IeltsScore > 9.0 {
 		c.JSON(400, gin.H{"error": "IELTS score must be between 1.0 and 9.0"})
 		slog.Error("IELTS score must be between 1.0 and 9.0")
-		return 
+		return
 	}
 
 	req := &pb.UpdateCertificate{
@@ -172,30 +170,28 @@ func (h *Handler) GetCertificateById(c *gin.Context) {
 // @Router /certificates/list [get]
 func (h *Handler) GetCertificateList(c *gin.Context) {
 	name := c.Query("name")
-	ieltsScoreStr := c.Query("ielts_score")
-	cefrLevel := c.Query("cefr_level")
+	// ieltsScoreStr := c.Query("ielts_score")
+	// cefrLevel := c.Query("cefr_level")
 
-	limit, offset, err := utils.ParsePaginationParams(c, c.Query("limit"), c.Query("offset"))
-	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		slog.Error("Error parsing pagination params", "err", err)
-		return
-	}
+	var limit, offset, err = utils.ParsePaginationParams(c, c.Query("limit"), c.Query("offset"))
+	// if err != nil {
+	// 	c.JSON(400, gin.H{"error": err.Error()})
+	// 	slog.Error("Error parsing pagination params", "err", err)
+	// 	return
+	// }
 
-	var ieltsScore float64
-	if ieltsScoreStr != "" {
-		ieltsScore, err = strconv.ParseFloat(ieltsScoreStr, 64)
-		if err != nil {
-			slog.Error("Invalid ielts_score value", "err", err)
-			c.JSON(400, gin.H{"error": "Invalid ielts_score value"})
-			return
-		}
-	}
+	// var ieltsScore float64
+	// if ieltsScoreStr != "" {
+	// 	ieltsScore, err = strconv.ParseFloat(ieltsScoreStr, 64)
+	// 	if err != nil {
+	// 		slog.Error("Invalid ielts_score value", "err", err)
+	// 		c.JSON(400, gin.H{"error": "Invalid ielts_score value"})
+	// 		return
+	// 	}
+	// }
 
 	req := &pb.GetListCertificateReq{
-		Name:       name,
-		IeltsScore: float32(ieltsScore),
-		CefrLevel:  cefrLevel,
+		Language: name,
 		Filter: &pb.Filter{
 			Limit:  int32(limit),
 			Offset: int32(offset),

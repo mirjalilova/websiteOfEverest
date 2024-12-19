@@ -6,8 +6,6 @@ definitions:
         type: string
       created_at:
         type: string
-      description:
-        type: string
       google_url:
         type: string
       id:
@@ -15,7 +13,9 @@ definitions:
       img_url:
         type: string
       name:
-        type: string
+        allOf:
+        - $ref: '#/definitions/proto.MultilingualField'
+        description: Multilingual field for branch name
       yandex_url:
         type: string
     type: object
@@ -32,7 +32,7 @@ definitions:
       ielts_score:
         type: string
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CourseItemRes:
     properties:
@@ -42,40 +42,42 @@ definitions:
         type: string
       days_per_week:
         type: integer
-      description:
-        type: string
+      descritption:
+        $ref: '#/definitions/proto.MultilingualField'
       id:
         type: string
       lesson_hours:
         type: number
+      picture_url:
+        type: string
       price:
         type: number
       week_days:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CourseRes:
     properties:
       created_at:
         type: string
       duration:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
       id:
         type: string
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CreateBranches:
     properties:
       contact:
-        type: string
-      description:
         type: string
       google_url:
         type: string
       img_url:
         type: string
       name:
-        type: string
+        allOf:
+        - $ref: '#/definitions/proto.MultilingualField'
+        description: Multilingual field for branch name
       yandex_url:
         type: string
     type: object
@@ -88,14 +90,14 @@ definitions:
       ielts_score:
         type: number
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CreateCourse:
     properties:
       duration:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CreateCourseItem:
     properties:
@@ -103,14 +105,16 @@ definitions:
         type: string
       days_per_week:
         type: integer
-      description:
-        type: string
+      descritption:
+        $ref: '#/definitions/proto.MultilingualField'
       lesson_hours:
         type: number
+      picture_url:
+        type: string
       price:
         type: number
       week_days:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
     type: object
   proto.CreateGallery:
     properties:
@@ -128,7 +132,7 @@ definitions:
       ielts_score:
         type: string
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
       profile_picture_url:
         type: string
     type: object
@@ -144,10 +148,12 @@ definitions:
   proto.GetListBranchesRes:
     properties:
       branches:
+        description: List of branches
         items:
           $ref: '#/definitions/proto.BranchesRes'
         type: array
       total_count:
+        description: Total number of branches
         type: integer
     type: object
   proto.GetListCertificateRes:
@@ -195,6 +201,18 @@ definitions:
       total_count:
         type: integer
     type: object
+  proto.MultilingualField:
+    properties:
+      en:
+        description: English
+        type: string
+      ru:
+        description: Russian
+        type: string
+      uz:
+        description: Uzbek
+        type: string
+    type: object
   proto.TeacherRes:
     properties:
       contact:
@@ -210,7 +228,7 @@ definitions:
       ielts_score:
         type: string
       name:
-        type: string
+        $ref: '#/definitions/proto.MultilingualField'
       profile_picture_url:
         type: string
     type: object
@@ -918,6 +936,29 @@ paths:
       summary: Update a course
       tags:
       - courses
+  /file-upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: File upload
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: File upload
+      tags:
+      - file-upload
   /gallery/create:
     post:
       consumes:

@@ -1116,6 +1116,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/file-upload": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "File upload",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file-upload"
+                ],
+                "summary": "File upload",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/gallery/create": {
             "post": {
                 "security": [
@@ -1664,9 +1701,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "google_url": {
                     "type": "string"
                 },
@@ -1677,7 +1711,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "Multilingual field for branch name",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.MultilingualField"
+                        }
+                    ]
                 },
                 "yandex_url": {
                     "type": "string"
@@ -1703,7 +1742,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1719,8 +1758,8 @@ const docTemplate = `{
                 "days_per_week": {
                     "type": "integer"
                 },
-                "description": {
-                    "type": "string"
+                "descritption": {
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "id": {
                     "type": "string"
@@ -1728,11 +1767,14 @@ const docTemplate = `{
                 "lesson_hours": {
                     "type": "number"
                 },
+                "picture_url": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "number"
                 },
                 "week_days": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1743,13 +1785,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "duration": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "id": {
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1759,9 +1801,6 @@ const docTemplate = `{
                 "contact": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "google_url": {
                     "type": "string"
                 },
@@ -1769,7 +1808,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "Multilingual field for branch name",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.MultilingualField"
+                        }
+                    ]
                 },
                 "yandex_url": {
                     "type": "string"
@@ -1789,7 +1833,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1797,10 +1841,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "duration": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1813,17 +1857,20 @@ const docTemplate = `{
                 "days_per_week": {
                     "type": "integer"
                 },
-                "description": {
-                    "type": "string"
+                "descritption": {
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "lesson_hours": {
                     "type": "number"
+                },
+                "picture_url": {
+                    "type": "string"
                 },
                 "price": {
                     "type": "number"
                 },
                 "week_days": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 }
             }
         },
@@ -1851,7 +1898,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "profile_picture_url": {
                     "type": "string"
@@ -1876,12 +1923,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "branches": {
+                    "description": "List of branches",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.BranchesRes"
                     }
                 },
                 "total_count": {
+                    "description": "Total number of branches",
                     "type": "integer"
                 }
             }
@@ -1956,6 +2005,23 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.MultilingualField": {
+            "type": "object",
+            "properties": {
+                "en": {
+                    "description": "English",
+                    "type": "string"
+                },
+                "ru": {
+                    "description": "Russian",
+                    "type": "string"
+                },
+                "uz": {
+                    "description": "Uzbek",
+                    "type": "string"
+                }
+            }
+        },
         "proto.TeacherRes": {
             "type": "object",
             "properties": {
@@ -1978,7 +2044,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/proto.MultilingualField"
                 },
                 "profile_picture_url": {
                     "type": "string"

@@ -168,7 +168,7 @@ func (h *Handler) GetTeacherById(c *gin.Context) {
 // @Security BearerAuth
 // @Router /teachers/list [get]
 func (h *Handler) GetTeacherList(c *gin.Context) {
-	name := c.Query("name")
+	language := c.Query("language")
 	experienceMinStr := c.Query("experience_years_min")
 	experienceMaxStr := c.Query("experience_years_max")
 
@@ -180,7 +180,7 @@ func (h *Handler) GetTeacherList(c *gin.Context) {
 	}
 
 	req := &pb.GetListTeacherReq{
-		Name:               name,
+		Language:           language,
 		ExperienceYearsMin: experienceMinStr,
 		ExperienceYearsMax: experienceMaxStr,
 		Filter: &pb.Filter{

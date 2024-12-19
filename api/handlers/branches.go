@@ -11,10 +11,10 @@ import (
 )
 
 type BranchesHandler struct {
-	repo *repository.BranchesRepository
+	repo *repository.BranchesRepo
 }
 
-func NewBranchesHandler(repo *repository.BranchesRepository) *BranchesHandler {
+func NewBranchesHandler(repo *repository.BranchesRepo) *BranchesHandler {
 	return &BranchesHandler{repo: repo}
 }
 
@@ -83,7 +83,6 @@ func (h *Handler) BranchesUpdate(c *gin.Context) {
 	req := &pb.UpdateBranches{
 		Id:          id,
 		Name:        reqBody.Name,
-		Description: reqBody.Description,
 		GoogleUrl:   reqBody.GoogleUrl,
 		YandexUrl:   reqBody.YandexUrl,
 		ImgUrl:      reqBody.ImgUrl,
@@ -187,7 +186,7 @@ func (h *Handler) GetBranchesList(c *gin.Context) {
 	}
 
 	req := &pb.GetListBranchesReq{
-		Name: name,
+		Language: name,
 		Filter: &pb.Filter{
 			Limit:  int32(limit),
 			Offset: int32(offset),

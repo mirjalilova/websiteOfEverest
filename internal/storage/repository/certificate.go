@@ -2,8 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
@@ -15,154 +15,109 @@ type CertificateRepository struct {
 }
 
 func NewCertificateRepository(db *sql.DB) *CertificateRepository {
-
 	return &CertificateRepository{db: db}
 }
 
+// Create Certificate
 func (r *CertificateRepository) Create(req *pb.CreateCertificate) (*pb.Void, error) {
+	query := `INSERT INTO certificates (name, ielts_score, cefr_level, certificate_url) 
+			  VALUES ($1::jsonb, $2, $3, $4)`
 
-	query := `INSERT INTO certificates
-				(name, ielts_score, cefr_level,certificate_url)
-			VALUES ($1, $2, $3, $4)`
-	_, err := r.db.Exec(query, req.Name, req.IeltsScore, req.CefrLevel, req.CertificateUrl)
+	nameJson, err := json.Marshal(req.Name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("marshal name failed: %w", err)
 	}
 
-	return &pb.Void{}, nil
+	_, err = r.db.Exec(query, string(nameJson), req.IeltsScore, req.CefrLevel, req.CertificateUrl)
+	return nil, err
 }
 
+// Update Certificate
 func (r *CertificateRepository) Update(req *pb.UpdateCertificate) (*pb.Void, error) {
-    query := `UPDATE certificates SET`
-    var args []interface{}
-    var conditions []string
+	query := `UPDATE certificates SET `
+	var updates []string
+	var args []interface{}
 
-    // Add conditions for each field
-    if req.Name != "string" && req.Name != "" {
-        args = append(args, req.Name)
-        conditions = append(conditions, fmt.Sprintf("name = $%d", len(args)))
-    }
-    if req.IeltsScore != 0 {
-        args = append(args, req.IeltsScore)
-        conditions = append(conditions, fmt.Sprintf("ielts_score = $%d", len(args)))
-    }
-    if req.CertificateUrl != "string" && req.CertificateUrl != "" {
-        args = append(args, req.CertificateUrl)
-        conditions = append(conditions, fmt.Sprintf("certificate_url = $%d", len(args)))
-    }
-    if req.CefrLevel != "string" && req.CefrLevel != "" {
-        args = append(args, req.CefrLevel)
-        conditions = append(conditions, fmt.Sprintf("cefr_level = $%d", len(args)))
-    }
-
-    // Check if there are fields to update
-    if len(conditions) == 0 {
-        return nil, fmt.Errorf("no fields to update")
-    }
-
-    // Add updated_at condition
-    conditions = append(conditions, "updated_at = now()")
-
-    // Construct the full query
-    query += " " + strings.Join(conditions, ", ")
-    query += " WHERE id = $" + strconv.Itoa(len(args)+1) + " AND deleted_at = 0"
-
-    // Add ID to arguments
-    args = append(args, req.Id)
-
-    // Debugging: Log query and args
-    fmt.Printf("Generated Query: %s\nArgs: %v\n", query, args)
-
-    // Execute the query
-    _, err := r.db.Exec(query, args...)
-    if err != nil {
-        return nil, fmt.Errorf("failed to update certificate: %w", err)
-    }
-
-    return &pb.Void{}, nil
-}
-
-func (r *CertificateRepository) Delete(req *pb.ById) (*pb.Void, error) {
-	query := `UPDATE certificates SET deleted_at = EXTRACT(EPOCH FROM NOW()) WHERE id = $1 AND deleted_at = 0`
-
-	_, err := r.db.Exec(query, req.Id)
-	if err != nil {
-		return nil, err
+	if req.Name != nil {
+		nameJson, err := json.Marshal(req.Name)
+		if err != nil {
+			return nil, fmt.Errorf("marshal name failed: %w", err)
+		}
+		args = append(args, string(nameJson))
+		updates = append(updates, "name=$"+strconv.Itoa(len(args)))
+	}
+	if req.IeltsScore != 0 {
+		args = append(args, req.IeltsScore)
+		updates = append(updates, "ielts_score=$"+strconv.Itoa(len(args)))
+	}
+	if req.CefrLevel != "" && req.CefrLevel != "string" {
+		args = append(args, req.CefrLevel)
+		updates = append(updates, "cefr_level=$"+strconv.Itoa(len(args)))
+	}
+	if req.CertificateUrl != "" && req.CertificateUrl != "string" {
+		args = append(args, req.CertificateUrl)
+		updates = append(updates, "certificate_url=$"+strconv.Itoa(len(args)))
 	}
 
-	return &pb.Void{}, nil
+	if len(updates) == 0 {
+		return nil, fmt.Errorf("no fields to update")
+	}
+
+	query += strings.Join(updates, ", ") + ", updated_at=now() WHERE id=$" + strconv.Itoa(len(args)+1) + " AND deleted_at=0"
+	args = append(args, req.Id)
+
+	_, err := r.db.Exec(query, args...)
+	return nil, err
 }
 
+// Get Certificate By ID
 func (r *CertificateRepository) GetById(req *pb.ById) (*pb.CertificateRes, error) {
-	res := &pb.CertificateRes{}
+	query := `SELECT id, name::jsonb, ielts_score::TEXT, cefr_level, certificate_url, 
+			  to_char(created_at, 'YYYY-MM-DD HH24:MI')
+			  FROM certificates WHERE id=$1 AND deleted_at=0`
 
-	query := `SELECT 
-				id, 
-				name, 
- 				ielts_score::TEXT AS ielts_score,			
-				cefr_level, 
-				certificate_url, 
-				to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
-			FROM 
-				certificates 
-			WHERE 
-				id = $1 AND deleted_at = 0`
+	res := &pb.CertificateRes{}
+	var nameJson string
 
 	err := r.db.QueryRow(query, req.Id).Scan(
-		&res.Id,
-		&res.Name,
-		&res.IeltsScore,
-		&res.CefrLevel,
-		&res.CertificateUrl,
-		&res.CreatedAt,
+		&res.Id, &nameJson, &res.IeltsScore, &res.CefrLevel, &res.CertificateUrl, &res.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("certificate not found")
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, err
+	}
+
+	err = json.Unmarshal([]byte(nameJson), &res.Name)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal name failed: %w", err)
 	}
 
 	return res, nil
 }
 
+// Get Certificate List
 func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetListCertificateRes, error) {
-	res := &pb.GetListCertificateRes{}
-
-	query := `SELECT
-				COUNT(id) OVER () as total_count,
-				id, 
-				name, 
-				ielts_score::TEXT AS ielts_score,
-				cefr_level, 
-				certificate_url, 
-				to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
-			FROM
-				certificates
-			WHERE
-				deleted_at = 0
-`
+	query := `SELECT COUNT(*) OVER (), id, name::jsonb, ielts_score::TEXT, cefr_level, 
+			  certificate_url, to_char(created_at, 'YYYY-MM-DD HH24:MI') 
+			  FROM certificates WHERE deleted_at=0`
 
 	var args []interface{}
-	var conditions []string
+	var filters []string
 
-	if req.Name != "" && req.Name != "string" {
-		args = append(args, "%"+req.Name+"%")
-		conditions = append(conditions, "name ILIKE $"+strconv.Itoa(len(args)))
-	}
-	if req.IeltsScore > 0 {
-		args = append(args, req.IeltsScore)
-		conditions = append(conditions, "ielts_score <= $"+strconv.Itoa(len(args)))
-	}
-	if req.CefrLevel > "" && req.CefrLevel != "string" {
-		args = append(args, req.CefrLevel)
-		conditions = append(conditions, "cefr_level >= $"+strconv.Itoa(len(args)))
+	// Filter by language if specified
+	if req.Language != "" {
+		filters = append(filters, "name->>$1 IS NOT NULL")
+		args = append(args, req.Language)
 	}
 
-	if len(conditions) > 0 {
-		query += " AND " + strings.Join(conditions, " AND ")
+	if len(filters) > 0 {
+		query += " AND " + strings.Join(filters, " AND ")
 	}
 
-	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	// Pagination
+	query += " LIMIT $" + strconv.Itoa(len(args)+1) + " OFFSET $" + strconv.Itoa(len(args)+2)
 	args = append(args, req.Filter.Limit, req.Filter.Offset)
 
 	rows, err := r.db.Query(query, args...)
@@ -171,30 +126,32 @@ func (r *CertificateRepository) GetList(req *pb.GetListCertificateReq) (*pb.GetL
 	}
 	defer rows.Close()
 
-	var count int32
+	res := &pb.GetListCertificateRes{}
 	for rows.Next() {
 		var certificate pb.CertificateRes
+		var nameJson string
 		err := rows.Scan(
-			&count,
-			&certificate.Id,
-			&certificate.Name,
-			&certificate.IeltsScore,
-			&certificate.CefrLevel,
-			&certificate.CertificateUrl,
-			&certificate.CreatedAt,
+			&res.TotalCount, &certificate.Id, &nameJson, &certificate.IeltsScore,
+			&certificate.CefrLevel, &certificate.CertificateUrl, &certificate.CreatedAt,
 		)
 		if err != nil {
-			log.Printf("Error in row scan: %v", err)
 			return nil, err
 		}
 
-		res.Certificates = append(res.Certificates, &certificate)
-		res.TotalCount = count
-	}
+		err = json.Unmarshal([]byte(nameJson), &certificate.Name)
+		if err != nil {
+			return nil, fmt.Errorf("unmarshal name failed: %w", err)
+		}
 
-	if rows.Err() != nil {
-		return nil, rows.Err()
+		res.Certificates = append(res.Certificates, &certificate)
 	}
 
 	return res, nil
+}
+
+// Delete Certificate
+func (r *CertificateRepository) Delete(req *pb.ById) (*pb.Void, error) {
+	query := `UPDATE certificates SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 AND deleted_at=0`
+	_, err := r.db.Exec(query, req.Id)
+	return nil, err
 }

@@ -15,25 +15,26 @@ service CourseService {
 }
 
 message CreateCourse {
-    string name = 1;
-    string  duration = 2;
+    MultilingualField name= 1;
+    MultilingualField duration = 2;
 }
 
 message UpdateCourse {
     string id = 1;
-    string name = 2;
-    string duration = 3;
+    MultilingualField name= 2;
+    MultilingualField duration = 3;
 }
 
 message CourseRes {
     string id = 1;
-    string name = 2;
-    string duration = 3;
+    MultilingualField name= 2;
+    MultilingualField duration = 3;
     string created_at = 4;
 }
 
 message GetListCourseReq {
-    Filter filter = 1;
+    string language = 1;
+    Filter filter = 2;
 }
 
 message GetListCourseRes {

@@ -6,6 +6,7 @@ package proto;
 
 import "common.proto";
 
+// Service Definition
 service BranchesService {
     rpc Create(CreateBranches) returns (Void);
     rpc Update(UpdateBranches) returns (Void);
@@ -14,42 +15,48 @@ service BranchesService {
     rpc GetList(GetListBranchesReq) returns (GetListBranchesRes);
 }
 
+
+// Request for Creating a Branch
 message CreateBranches {
-    string name = 1;
-    string description = 2;
+    MultilingualField name = 1;  // Multilingual field for branch name
+    string google_url = 2;
+    string yandex_url = 3;
+    string contact = 4;
+    string img_url = 5;
+}
+
+// Request for Updating a Branch
+message UpdateBranches {
+    string id = 1;
+    MultilingualField name = 2;  // Multilingual field for branch name
     string google_url = 3;
     string yandex_url = 4;
     string contact = 5;
     string img_url = 6;
 }
 
-message UpdateBranches {
-    string id = 1;
-    string name = 2;
-    string description = 3;
-    string google_url = 4;
-    string yandex_url = 5;
-    string contact = 6;
-    string img_url = 7;
-}
-
+// Response for a Single Branch
 message BranchesRes {
     string id = 1;
-    string name = 2;
-    string description = 3;
-    string google_url = 4;
-    string yandex_url = 5;
-    string contact = 6;
-    string img_url = 7;
-    string created_at = 8;
+    MultilingualField name = 2;  // Multilingual field for branch name
+    string google_url = 3;
+    string yandex_url = 4;
+    string contact = 5;
+    string img_url = 6;
+    string created_at = 7;
 }
 
+// Request for Listing Branches
 message GetListBranchesReq {
-    string name = 1;
-    Filter filter = 2;
+    string language = 1;  // Preferred language for the response
+    Filter filter = 2;    // Pagination, sorting, or filtering options
 }
 
+// Response for Listing Branches
 message GetListBranchesRes {
-    repeated BranchesRes branches = 1;
-    int32 total_count = 2;
+    repeated BranchesRes branches = 1; // List of branches
+    int32 total_count = 2;             // Total number of branches
 }
+
+// Filter Message (Optional for Pagination/Sorting)
+

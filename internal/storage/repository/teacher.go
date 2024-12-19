@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -19,8 +20,13 @@ func NewTeacherRepository(db *sql.DB) *TeacherRepository {
 
 func (r *TeacherRepository) Create(req *pb.CreateTeacher) (*pb.Void, error) {
 	query := `INSERT INTO teachers (name, experience_years, ielts_score, profile_picture_url, contact, graduated_students)
-              VALUES ($1, $2, $3, $4, $5, $6)`
-	_, err := r.db.Exec(query, req.Name, req.ExperienceYears, req.IeltsScore, req.ProfilePictureUrl, req.Contact, req.GraduatedStudents)
+              VALUES ($1::jsonb, $2, $3, $4, $5, $6)`
+
+	nameJson, err := json.Marshal(req.Name)
+	if err != nil {
+		return nil, err
+	}
+	_, err = r.db.Exec(query, string(nameJson), req.ExperienceYears, req.IeltsScore, req.ProfilePictureUrl, req.Contact, req.GraduatedStudents)
 	if err != nil {
 		return nil, err
 	}
@@ -32,8 +38,12 @@ func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 	var args []interface{}
 	var conditions []string
 
-	if req.Name != "" && req.Name != "string" {
-		args = append(args, req.Name)
+	if req.Name != nil{
+		nameJson, err := json.Marshal(req.Name)
+		if err != nil {
+			return nil, fmt.Errorf("marshal name failed: %w", err)
+		}
+		args = append(args, string(nameJson))
 		conditions = append(conditions, "name=$"+strconv.Itoa(len(args)))
 	}
 	if req.ExperienceYears != "" && req.ExperienceYears != "string" {
@@ -56,7 +66,6 @@ func (r *TeacherRepository) Update(req *pb.UpdateTeacher) (*pb.Void, error) {
 		args = append(args, req.GraduatedStudents)
 		conditions = append(conditions, "graduated_students=$"+strconv.Itoa(len(args)))
 	}
-
 
 	conditions = append(conditions, "updated_at=NOW()")
 	query += " " + strings.Join(conditions, ", ")
@@ -85,7 +94,7 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
 	res := &pb.TeacherRes{}
 	query := `SELECT 
                 id, 
-                name, 
+                name::jsonb,
                 experience_years, 
                 ielts_score::TEXT AS ielts_score, 
                 profile_picture_url, 
@@ -96,9 +105,10 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
                 teachers 
             WHERE id = $1 AND deleted_at = 0`
 
+    var nameJson string
 	err := r.db.QueryRow(query, req.Id).Scan(
 		&res.Id,
-		&res.Name,
+		&nameJson,
 		&res.ExperienceYears,
 		&res.IeltsScore,
 		&res.ProfilePictureUrl,
@@ -111,6 +121,13 @@ func (r *TeacherRepository) GetById(req *pb.ById) (*pb.TeacherRes, error) {
 	} else if err != nil {
 		return nil, err
 	}
+
+	// Unmarshal JSON into MultilingualField
+	err = json.Unmarshal([]byte(nameJson), &res.Name)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal name failed: %w", err)
+	}
+
 	return res, nil
 }
 
@@ -119,7 +136,7 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 	query := `SELECT 
                 COUNT(id) OVER() AS total_count, 
                 id, 
-                name, 
+                name::jsonb,
                 experience_years, 
                 ielts_score::TEXT AS ielts_score, 
                 profile_picture_url, 
@@ -133,23 +150,17 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 	var args []interface{}
 	filters := []string{}
 
-	if req.Name != "" && req.Name != "strinh" {
-		filters = append(filters, "name ILIKE '%' || $"+strconv.Itoa(len(args)+1)+" || '%'")
-		args = append(args, req.Name)
-	}
-	if req.ExperienceYearsMin != "" && req.ExperienceYearsMin != "string" {
-		filters = append(filters, "experience_years >= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.ExperienceYearsMin)
-	}
-	if req.ExperienceYearsMax != "" && req.ExperienceYearsMax != "string" {
-		filters = append(filters, "experience_years <= $"+strconv.Itoa(len(args)+1))
-		args = append(args, req.ExperienceYearsMax)
+	// Filter by language if specified
+	if req.Language != "" {
+		filters = append(filters, "name->>$1 IS NOT NULL")
+		args = append(args, req.Language)
 	}
 
 	if len(filters) > 0 {
 		query += " AND " + strings.Join(filters, " AND ")
 	}
 
+	// Pagination
 	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
 	args = append(args, req.Filter.Limit, req.Filter.Offset)
 
@@ -159,13 +170,13 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 	}
 	defer rows.Close()
 
-	var count int32
 	for rows.Next() {
+		var nameJson string
 		var teacher pb.TeacherRes
 		err := rows.Scan(
-			&count,
+			&res.TotalCount,
 			&teacher.Id,
-			&teacher.Name,
+			&nameJson,
 			&teacher.ExperienceYears,
 			&teacher.IeltsScore,
 			&teacher.ProfilePictureUrl,
@@ -176,12 +187,14 @@ func (r *TeacherRepository) GetList(req *pb.GetListTeacherReq) (*pb.GetListTeach
 		if err != nil {
 			return nil, err
 		}
-		res.Teacher = append(res.Teacher, &teacher)
-		res.TotalCount = count
-	}
 
-	if rows.Err() != nil {
-		return nil, err
+		// Unmarshal JSON into MultilingualField
+		err = json.Unmarshal([]byte(nameJson), &teacher.Name)
+		if err != nil {
+			return nil, fmt.Errorf("unmarshal name failed: %w", err)
+		}
+
+		res.Teacher = append(res.Teacher, &teacher)
 	}
 
 	return res, nil

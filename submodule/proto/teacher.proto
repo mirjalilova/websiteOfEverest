@@ -15,7 +15,7 @@ service TeacherService {
 }
 
 message CreateTeacher {
-    string name = 1;
+    MultilingualField name = 1;
     string experience_years = 2;
     string ielts_score = 3;
     string profile_picture_url = 4;
@@ -25,7 +25,7 @@ message CreateTeacher {
 
 message UpdateTeacher {
     string id = 1;
-    string name = 2;
+    MultilingualField name = 2;
     string experience_years = 3;
     string ielts_score = 4;
     string profile_picture_url = 5;
@@ -35,7 +35,7 @@ message UpdateTeacher {
 
 message TeacherRes {
     string id = 1;
-    string name = 2;
+    MultilingualField name = 2;
     string experience_years = 3;
     string ielts_score = 4;
     string profile_picture_url = 5;
@@ -45,10 +45,10 @@ message TeacherRes {
 }
 
 message GetListTeacherReq {
-    string name = 1;
-    string experience_years_min = 2;
-    string experience_years_max = 3;
-    Filter filter = 6;
+    string experience_years_min = 1;
+    string experience_years_max = 2;
+    string language = 3;
+    Filter filter = 4;
 }
 
 message GetListTeacherRes {

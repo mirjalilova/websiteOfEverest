@@ -15,7 +15,7 @@ service CertificateService {
 }
 
 message CreateCertificate {
-    string name = 1;
+    MultilingualField name = 1;
     float  ielts_score = 2;
     string cefr_level = 3;
     string certificate_url = 4;
@@ -23,7 +23,7 @@ message CreateCertificate {
 
 message UpdateCertificate {
     string id = 1;
-    string name = 2;
+    MultilingualField name = 2;
     float  ielts_score = 3;
     string cefr_level = 4;
     string certificate_url = 5;
@@ -31,18 +31,16 @@ message UpdateCertificate {
 
 message CertificateRes {
     string id = 1;
-    string name = 2;
-    string  ielts_score = 3;
+    MultilingualField name = 2;
+    string ielts_score = 3;
     string cefr_level = 4;
     string certificate_url = 5;
     string created_at = 6;
 }
 
 message GetListCertificateReq {
-    string name = 1;
-    float  ielts_score = 2;
-    string cefr_level = 3;
-    Filter filter = 4;
+    string language = 1;
+    Filter filter = 2;
 }
 
 message GetListCertificateRes {

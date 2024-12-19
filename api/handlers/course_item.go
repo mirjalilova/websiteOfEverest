@@ -74,7 +74,7 @@ func (h *Handler) UpdateCourseItem(c *gin.Context) {
 	req := &pb.UpdateCourseItem{
 		Id:            id,
 		CourseId:      reqBody.CourseId,
-		Description:   reqBody.Description,
+	    Descritption:  reqBody.Descritption,
 		Price:         reqBody.Price,
 		DaysPerWeek:   reqBody.DaysPerWeek,
 		LessonHours:   reqBody.LessonHours,
