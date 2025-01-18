@@ -20,8 +20,8 @@ func NewCourseRepository(db *sql.DB) *CourseRepository {
 
 func (r *CourseRepository) Create(req *pb.CreateCourse) (*pb.Void, error) {
 	query := `INSERT INTO courses
-                (name, duration)
-            VALUES($1::jsonb, $2::jsonb)`
+                (name, duration, picture_url)
+            VALUES($1::jsonb, $2::jsonb, $3)`
 
 	nameJson, err := json.Marshal(req.Name)
 	if err != nil {
@@ -65,6 +65,11 @@ func (r *CourseRepository) Update(req *pb.UpdateCourse) (*pb.Void, error) {
 		conditions = append(conditions, "duration=$"+strconv.Itoa(len(args)))
 	}
 
+	if req.PictureUrl != "" {
+		args = append(args, req.PictureUrl)
+		conditions = append(conditions, "picture_url=$"+strconv.Itoa(len(args)))
+	}
+
 	if len(conditions) == 0 {
 		return nil, fmt.Errorf("no fields to update")
 	}
@@ -103,7 +108,8 @@ func (r *CourseRepository) GetById(req *pb.ById) (*pb.CourseRes, error) {
 	query := `SELECT
                 id, 
                 name::jsonb, 
-                duration::jsonb, 
+                duration::jsonb,
+				picture_url, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM 
                 courses
@@ -140,7 +146,8 @@ func (r *CourseRepository) GetList(req *pb.GetListCourseReq) (*pb.GetListCourseR
                 COUNT(id) OVER () AS total_count,
                 id, 
                 name::jsonb, 
-                duration::jsonb, 
+                duration::jsonb,
+				picture_url, 
                 to_char(created_at, 'YYYY-MM-DD HH24:MI') as formatted_created_at
             FROM
                 courses
@@ -185,6 +192,7 @@ func (r *CourseRepository) GetList(req *pb.GetListCourseReq) (*pb.GetListCourseR
 			&course.Id,
 			&nameJson,
 			&durationJson,
+			&course.PictureUrl,
 			&course.CreatedAt,
 		)
 		if err != nil {

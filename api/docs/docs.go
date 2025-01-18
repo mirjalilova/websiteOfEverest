@@ -1767,9 +1767,6 @@ const docTemplate = `{
                 "lesson_hours": {
                     "type": "number"
                 },
-                "picture_url": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
                 },
@@ -1792,6 +1789,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "$ref": "#/definitions/proto.MultilingualField"
+                },
+                "picture_url": {
+                    "type": "string"
                 }
             }
         },
@@ -1845,6 +1845,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "$ref": "#/definitions/proto.MultilingualField"
+                },
+                "picture_url": {
+                    "type": "string"
                 }
             }
         },
@@ -1862,9 +1865,6 @@ const docTemplate = `{
                 },
                 "lesson_hours": {
                     "type": "number"
-                },
-                "picture_url": {
-                    "type": "string"
                 },
                 "price": {
                     "type": "number"

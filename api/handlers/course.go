@@ -79,6 +79,7 @@ func (h *Handler) CourseUpdate(c *gin.Context) {
 		Id:       id,
 		Name:     reqBody.Name,
 		Duration: reqBody.Duration,
+		PictureUrl: reqBody.PictureUrl,
 	}
 
 	_, err = h.Clients.Course.Update(context.Background(), req)

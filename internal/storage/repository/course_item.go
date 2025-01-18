@@ -21,8 +21,8 @@ func NewCourseItemRepository(db *sql.DB) *CourseItemRepository {
 // Create Course Item
 func (r *CourseItemRepository) Create(req *pb.CreateCourseItem) (*pb.Void, error) {
 	query := `INSERT INTO course_items
-                (course_id, description, price, days_per_week, lesson_hours, week_days, picture_url) 
-              VALUES ($1, $2::jsonb, $3, $4, $5, $6::jsonb, $7)`
+                (course_id, description, price, days_per_week, lesson_hours, week_days) 
+              VALUES ($1, $2::jsonb, $3, $4, $5, $6::jsonb)`
 
 	descriptionJson, err := json.Marshal(req.Descritption)
 	if err != nil {
@@ -34,7 +34,7 @@ func (r *CourseItemRepository) Create(req *pb.CreateCourseItem) (*pb.Void, error
 		return nil, fmt.Errorf("marshal week_days failed: %w", err)
 	}
 
-	_, err = r.db.Exec(query, req.CourseId, string(descriptionJson), req.Price, req.DaysPerWeek, req.LessonHours, string(weekDaysJson), req.PictureUrl)
+	_, err = r.db.Exec(query, req.CourseId, string(descriptionJson), req.Price, req.DaysPerWeek, req.LessonHours, string(weekDaysJson))
 	return nil, err
 }
 
@@ -76,10 +76,6 @@ func (r *CourseItemRepository) Update(req *pb.UpdateCourseItem) (*pb.Void, error
 		args = append(args, string(weekDaysJson))
 		updates = append(updates, "week_days=$"+strconv.Itoa(len(args)))
 	}
-	if req.PictureUrl != "" {
-		args = append(args, req.PictureUrl)
-		updates = append(updates, "picture_url=$"+strconv.Itoa(len(args)))
-	}
 
 	if len(updates) == 0 {
 		return nil, fmt.Errorf("no fields to update")
@@ -102,7 +98,7 @@ func (r *CourseItemRepository) Delete(req *pb.ById) (*pb.Void, error) {
 // Get Course Item by ID
 func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) {
 	query := `SELECT id, course_id, description::jsonb, price, days_per_week, lesson_hours, 
-			  week_days::jsonb, picture_url, to_char(created_at, 'YYYY-MM-DD HH24:MI') 
+			  week_days::jsonb, to_char(created_at, 'YYYY-MM-DD HH24:MI') 
 			  FROM course_items WHERE id=$1 AND deleted_at=0`
 
 	res := &pb.CourseItemRes{}
@@ -110,7 +106,7 @@ func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) 
 
 	err := r.db.QueryRow(query, req.Id).Scan(
 		&res.Id, &res.CourseId, &descriptionJson, &res.Price, &res.DaysPerWeek,
-		&res.LessonHours, &weekDaysJson, &res.PictureUrl, &res.CreatedAt,
+		&res.LessonHours, &weekDaysJson, &res.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("course item not found")
@@ -132,7 +128,7 @@ func (r *CourseItemRepository) GetById(req *pb.ById) (*pb.CourseItemRes, error) 
 // Get List of Course Items
 func (r *CourseItemRepository) GetList(req *pb.GetListCourseItemReq) (*pb.GetListCourseItemRes, error) {
 	query := `SELECT COUNT(*) OVER (), id, course_id, description::jsonb, price, days_per_week, 
-			  lesson_hours, week_days::jsonb, picture_url, to_char(created_at, 'YYYY-MM-DD HH24:MI') 
+			  lesson_hours, week_days::jsonb, to_char(created_at, 'YYYY-MM-DD HH24:MI') 
 			  FROM course_items WHERE deleted_at=0`
 	var args []interface{}
 	var filters []string
@@ -188,7 +184,7 @@ func (r *CourseItemRepository) GetList(req *pb.GetListCourseItemReq) (*pb.GetLis
 		var descriptionJson, weekDaysJson string
 		err := rows.Scan(
 			&res.TotalCount, &item.Id, &item.CourseId, &descriptionJson, &item.Price,
-			&item.DaysPerWeek, &item.LessonHours, &weekDaysJson, &item.PictureUrl, &item.CreatedAt,
+			&item.DaysPerWeek, &item.LessonHours, &weekDaysJson, &item.CreatedAt,
 		)
 		if err != nil {
 			return nil, err

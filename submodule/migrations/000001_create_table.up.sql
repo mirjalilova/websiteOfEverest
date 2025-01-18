@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS courses (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name JSONB NOT NULL CHECK (jsonb_typeof(name) = 'object'),
     duration JSONB NOT NULL CHECK (jsonb_typeof(duration) = 'object'),
+    picture_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0
@@ -35,7 +36,6 @@ CREATE TABLE IF NOT EXISTS course_items (
     days_per_week INT NOT NULL,
     lesson_hours FLOAT NOT NULL,
     week_days JSONB NOT NULL CHECK (jsonb_typeof(week_days) = 'object'),
-    picture_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at BIGINT DEFAULT 0

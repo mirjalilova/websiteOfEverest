@@ -17,19 +17,22 @@ service CourseService {
 message CreateCourse {
     MultilingualField name= 1;
     MultilingualField duration = 2;
+    string picture_url = 3;
 }
 
 message UpdateCourse {
     string id = 1;
     MultilingualField name= 2;
     MultilingualField duration = 3;
+    string picture_url = 4;
 }
 
 message CourseRes {
     string id = 1;
     MultilingualField name= 2;
     MultilingualField duration = 3;
-    string created_at = 4;
+    string picture_url = 4;
+    string created_at = 5;
 }
 
 message GetListCourseReq {

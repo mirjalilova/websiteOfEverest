@@ -21,7 +21,6 @@ message CreateCourseItem {
     int32  days_per_week = 4;
     float  lesson_hours = 5;
     MultilingualField week_days = 6;
-    string picture_url = 7;
 }
 
 message UpdateCourseItem {
@@ -32,7 +31,6 @@ message UpdateCourseItem {
     int32  days_per_week = 5;
     float  lesson_hours = 6;
     MultilingualField week_days = 7;
-    string picture_url = 8;
 }
 
 message CourseItemRes {
@@ -43,8 +41,7 @@ message CourseItemRes {
     int32  days_per_week = 5;
     float  lesson_hours = 6;
     MultilingualField week_days = 7;
-    string picture_url = 8;
-    string created_at = 9;
+    string created_at = 8;
 }
 
 message GetListCourseItemReq {
